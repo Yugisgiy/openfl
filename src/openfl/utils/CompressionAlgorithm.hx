@@ -1,6 +1,7 @@
 package openfl.utils;
 
 #if !flash
+
 #if !openfljs
 /**
 	The CompressionAlgorithm class defines string constants for the names of

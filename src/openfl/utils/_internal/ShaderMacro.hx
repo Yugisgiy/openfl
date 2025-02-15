@@ -3,7 +3,6 @@ package openfl.utils._internal;
 #if macro
 import haxe.macro.Context;
 import haxe.macro.Expr;
-import haxe.macro.Type;
 
 using haxe.macro.ExprTools;
 using haxe.macro.Tools;
@@ -25,8 +24,8 @@ class ShaderMacro
 		var glVertexHeader = "";
 		var glVertexBody = "";
 
-		var glFragmentSource:String = null;
-		var glVertexSource:String = null;
+		var glFragmentSource = null;
+		var glVertexSource = null;
 
 		for (field in fields)
 		{
@@ -61,7 +60,7 @@ class ShaderMacro
 		var localClass = Context.getLocalClass().get();
 		var superClass = localClass.superClass != null ? localClass.superClass.t.get() : null;
 		var parent = superClass;
-		var parentFields:Array<ClassField>;
+		var parentFields;
 
 		while (parent != null)
 		{
@@ -113,8 +112,8 @@ class ShaderMacro
 				glVertexSource = StringTools.replace(glVertexSource, "#pragma body", glVertexBody);
 			}
 
-			var shaderDataFields:Array<Field> = [];
-			var uniqueFields:Array<Field> = [];
+			var shaderDataFields = new Array<Field>();
+			var uniqueFields = [];
 
 			processFields(glVertexSource, "attribute", shaderDataFields, pos);
 			processFields(glVertexSource, "uniform", shaderDataFields, pos);
@@ -215,7 +214,7 @@ class ShaderMacro
 			regex = ~/attribute ([A-Za-z0-9]+) ([A-Za-z0-9_]+)/;
 		}
 
-		var fieldAccess:Access;
+		var fieldAccess;
 
 		while (regex.matchSub(source, lastMatch))
 		{

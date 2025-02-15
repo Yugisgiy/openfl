@@ -72,7 +72,7 @@ class TextureBase extends EventDispatcher
 		{
 			__textureInternalFormat = gl.RGBA;
 
-			var bgraExtension:Dynamic = null;
+			var bgraExtension = null;
 			#if (!js || !html5)
 			bgraExtension = gl.getExtension("EXT_bgra");
 			if (bgraExtension == null) bgraExtension = gl.getExtension("EXT_texture_format_BGRA8888");
@@ -381,8 +381,7 @@ class TextureBase extends EventDispatcher
 	@:noCompletion private function __uploadFromImage(image:Image):Void
 	{
 		var gl = __context.gl;
-		var internalFormat:Int;
-		var format:Int;
+		var internalFormat, format;
 
 		if (__textureTarget != gl.TEXTURE_2D) return;
 

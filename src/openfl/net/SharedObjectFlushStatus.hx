@@ -1,6 +1,7 @@
 package openfl.net;
 
 #if !flash
+
 #if !openfljs
 /**
 	The SharedObjectFlushStatus class provides values for the code returned
