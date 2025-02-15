@@ -1,6 +1,7 @@
 package openfl.geom;
 
 #if !flash
+
 #if !openfljs
 /**
 	The Orientation3D class is an enumeration of constant

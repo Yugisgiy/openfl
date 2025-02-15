@@ -1,8 +1,5 @@
 package openfl.display;
 
-import openfl.display3D.Context3DWrapMode;
-import openfl.display3D.Context3DMipFilter;
-import openfl.display3D.Context3DTextureFilter;
 #if !flash
 import openfl.display3D._internal.GLProgram;
 import openfl.display3D._internal.GLShader;
@@ -776,11 +773,7 @@ class Shader
 	@:noCompletion private function __updateGLFromBuffer(shaderBuffer:ShaderBuffer, bufferOffset:Int):Void
 	{
 		var textureCount = 0;
-		var input:ShaderInput<BitmapData>;
-		var inputData:BitmapData;
-		var inputFilter:Context3DTextureFilter;
-		var inputMipFilter:Context3DMipFilter;
-		var inputWrap:Context3DWrapMode;
+		var input, inputData, inputFilter, inputMipFilter, inputWrap;
 
 		for (i in 0...shaderBuffer.inputCount)
 		{
@@ -826,13 +819,10 @@ class Shader
 		var floatCount = shaderBuffer.paramFloatCount;
 		var paramData = shaderBuffer.paramData;
 
-		var boolRef:ShaderParameter<Bool>;
-		var floatRef:ShaderParameter<Float>;
-		var intRef:ShaderParameter<Int>;
-		var hasOverride:Bool;
-		var overrideBoolValue:Array<Bool> = null;
-		var overrideFloatValue:Array<Float> = null;
-		var overrideIntValue:Array<Int> = null;
+		var boolRef, floatRef, intRef, hasOverride;
+		var overrideBoolValue:Array<Bool> = null,
+			overrideFloatValue:Array<Float> = null,
+			overrideIntValue:Array<Int> = null;
 
 		for (i in 0...shaderBuffer.paramCount)
 		{

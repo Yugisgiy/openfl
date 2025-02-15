@@ -1,6 +1,5 @@
 package openfl.text._internal;
 
-#if !flash
 import openfl.utils._internal.Log;
 import openfl.text.StyleSheet;
 import openfl.text.TextFormat;
@@ -19,8 +18,7 @@ class HTMLParser
 	private static var __regexBlockIndent:EReg = ~/blockindent\s?=\s?("([^"]+)"|'([^']+)')/i;
 	private static var __regexClass:EReg = ~/class\s?=\s?("([^"]+)"|'([^']+)')/i;
 	private static var __regexColor:EReg = ~/color\s?=\s?("#([^"]+)"|'#([^']+)')/i;
-	private static var __regexEntityApos:EReg = ~/&apos;/g;
-	private static var __regexEntityNbsp:EReg = ~/&nbsp;/g;
+	private static var __regexEntities:Array<EReg> = [~/&quot;/g, ~/&apos;/g, ~/&amp;/g, ~/&lt;/g, ~/&gt;/g, ~/&nbsp;/g];
 	private static var __regexCharEntity:EReg = ~/&#(?:([0-9]+)|(x[0-9a-fA-F]+));/g;
 	private static var __regexFace:EReg = ~/face\s?=\s?("([^"]+)"|'([^']+)')/i;
 	private static var __regexHTMLTag:EReg = ~/<.*?>/g;
@@ -43,8 +41,7 @@ class HTMLParser
 			value = __regexBreakTag.replace(value, "");
 		}
 
-		// it's not documented, but &nbsp; is supported by Flash
-		value = __regexEntityNbsp.replace(value, " ");
+		value = __regexEntities[5].replace(value, " ");
 
 		value = __regexCharEntity.map(value, function(ereg)
 		{
@@ -76,7 +73,7 @@ class HTMLParser
 
 		if (segments.length == 1)
 		{
-			value = __htmlUnescape(__regexHTMLTag.replace(value, ""));
+			value = StringTools.htmlUnescape(__regexHTMLTag.replace(value, ""));
 
 			if (textFormatRanges.length > 1)
 			{
@@ -95,9 +92,10 @@ class HTMLParser
 			textFormatRanges.splice(0, textFormatRanges.length);
 
 			value = "";
+			var segment;
 
 			var formatStack = [textFormat.clone()];
-			var tagStack:Array<String> = [];
+			var tagStack = [];
 			var sub:String;
 			var noLineBreak = false;
 
@@ -139,7 +137,7 @@ class HTMLParser
 
 					if (start < segment.length)
 					{
-						sub = __htmlUnescape(segment.substr(start));
+						sub = StringTools.htmlUnescape(segment.substr(start));
 						textFormatRanges.push(new TextFormatRange(format, value.length, value.length + sub.length));
 						value += sub;
 						noLineBreak = false;
@@ -265,7 +263,7 @@ class HTMLParser
 								if (__regexTabStops.match(segment))
 								{
 									var values = __getAttributeMatch(__regexTabStops).split(" ");
-									var tabStops:Array<Int> = [];
+									var tabStops = [];
 
 									for (stop in values)
 									{
@@ -281,7 +279,7 @@ class HTMLParser
 
 						if (start < segment.length)
 						{
-							sub = __htmlUnescape(segment.substring(start));
+							sub = StringTools.htmlUnescape(segment.substring(start));
 							textFormatRanges.push(new TextFormatRange(format, value.length, value.length + sub.length));
 							value += sub;
 							noLineBreak = false;
@@ -289,7 +287,7 @@ class HTMLParser
 					}
 					else
 					{
-						sub = __htmlUnescape(segment);
+						sub = StringTools.htmlUnescape(segment);
 						textFormatRanges.push(new TextFormatRange(format, value.length, value.length + sub.length));
 						value += sub;
 						noLineBreak = false;
@@ -310,12 +308,4 @@ class HTMLParser
 	{
 		return regex.matched(2) != null ? regex.matched(2) : regex.matched(3);
 	}
-
-	@:noCompletion private static function __htmlUnescape(s:String):String
-	{
-		// for some reason, StringTools.htmlUnescape uses &#039; instead of &apos;
-		s = __regexEntityApos.replace(s, "'");
-		return StringTools.htmlUnescape(s);
-	}
 }
-#end

@@ -8,12 +8,13 @@ package openfl.events;
 	class allows any object on the display list to be an event target and as
 	such, to use the methods of the IEventDispatcher interface.
 
-	Event targets are an important part of the OpenFL event model. The event
-	target serves as the focal point for how events flow through the display
-	list hierarchy. When an event such as a mouse click or a keypress occurs,
-	the OpenFL application dispatches an event object into the event flow fro
-	the root of the display list. The event object then makes its way through
-	the display list until it reaches the event target, at which point it begins
+	Event targets are an important part of the Flash<sup>®</sup> Player and
+	Adobe<sup>®</sup> AIR<sup>®</sup> event model. The event target serves as
+	the focal point for how events flow through the display list hierarchy.
+	When an event such as a mouse click or a keypress occurs, Flash Player or
+	the AIR application dispatches an event object into the event flow from the
+	root of the display list. The event object then makes its way through the
+	display list until it reaches the event target, at which point it begins
 	its return trip through the display list. This round-trip journey to the
 	event target is conceptually divided into three phases: the capture phase
 	comprises the journey from the root to the last node before the event
@@ -23,38 +24,30 @@ package openfl.events;
 
 	In general, the easiest way for a user-defined class to gain event
 	dispatching capabilities is to extend EventDispatcher. If this is
-	impossible (that is, if the class is already extending another class), you
+	impossible(that is, if the class is already extending another class), you
 	can instead implement the IEventDispatcher interface, create an
 	EventDispatcher member, and write simple hooks to route calls into the
 	aggregated EventDispatcher.
 
-	@event activate   [broadcast event] Dispatched when the OpenFL application
-					  gains operating system focus and becomes
+	@event activate   [broadcast event] Dispatched when the Flash Player or AIR
+					  application gains operating system focus and becomes
 					  active. This event is a broadcast event, which means that
 					  it is dispatched by all EventDispatcher objects with a
 					  listener registered for this event. For more information
 					  about broadcast events, see the DisplayObject class.
-	@event deactivate [broadcast event] Dispatched when the OpenFL application
-					  loses operating system focus and is becoming
+	@event deactivate [broadcast event] Dispatched when the Flash Player or AIR
+					  application operating loses system focus and is becoming
 					  inactive. This event is a broadcast event, which means
 					  that it is dispatched by all EventDispatcher objects with
 					  a listener registered for this event. For more
 					  information about broadcast events, see the DisplayObject
 					  class.
-
-	@see [Basics of handling events](https://books.openfl.org/openfl-developers-guide/handling-events/basics-of-handling-events.html)
-	@see [The event flow](https://books.openfl.org/openfl-developers-guide/handling-events/the-event-flow.html)
-	@see [Event objects](https://books.openfl.org/openfl-developers-guide/handling-events/event-objects.html)
-	@see [Event listeners](https://books.openfl.org/openfl-developers-guide/handling-events/event-listeners.html)
-	@see [Handling events for display objects](https://books.openfl.org/openfl-developers-guide/display-programming/working-with-display-objects/handling-events-for-display-objects.html)
 **/
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
 @:noDebug
 #end
-@:access(openfl.display.Stage)
 @:access(openfl.events.Event)
-@:access(openfl.events.UncaughtErrorEvents)
 class EventDispatcher implements IEventDispatcher
 {
 	@:noCompletion private var __eventMap:Map<String, Array<Listener>>;
@@ -119,7 +112,7 @@ class EventDispatcher implements IEventDispatcher
 		`removeEventListener()`, or memory problems could result. Event
 		listeners are not automatically removed from memory because the garbage
 		collector does not remove the listener as long as the dispatching object
-		exists (unless the `useWeakReference` parameter is set to
+		exists(unless the `useWeakReference` parameter is set to
 		`true`).
 
 		Copying an EventDispatcher instance does not copy the event listeners
@@ -135,7 +128,7 @@ class EventDispatcher implements IEventDispatcher
 
 		If an event listener is removed from a node while an event is being
 		processed on the node, it is still triggered by the current actions. After
-		it is removed, the event listener is never invoked again (unless
+		it is removed, the event listener is never invoked again(unless
 		registered again for future processing).
 
 		@param type             The type of event.
@@ -162,7 +155,7 @@ class EventDispatcher implements IEventDispatcher
 								processed in the order in which they were added.
 								The default priority is 0.
 		@param useWeakReference Determines whether the reference to the listener
-								is strong or weak. A strong reference (the
+								is strong or weak. A strong reference(the
 								default) prevents your listener from being
 								garbage-collected. A weak reference does not.
 
@@ -175,7 +168,7 @@ class EventDispatcher implements IEventDispatcher
 								for a listener that is a nested inner function,
 								the function will be garbage-collected and no
 								longer persistent. If you create references to the
-								inner function (save it in another variable) then
+								inner function(save it in another variable) then
 								it is not garbage-collected and stays
 								persistent.
 
@@ -421,37 +414,29 @@ class EventDispatcher implements IEventDispatcher
 						list.splice(indexToRemove, 1);
 						iterator.remove(listener, indexToRemove);
 					}
-					else if (Lib.current != null && Lib.current.stage != null && Lib.current.stage.__uncaughtErrorEvents.__enabled)
-					{
-						try
-						{
-							weakCallback(event);
-						}
-						catch (e:Dynamic)
-						{
-							if (!(event is UncaughtErrorEvent))
-							{
-								Lib.current.stage.__handleError(e);
-							}
-						}
-					}
 					else
 					{
 						weakCallback(event);
 					}
 				}
-				else if (Lib.current != null && Lib.current.stage != null && Lib.current.stage.__uncaughtErrorEvents.__enabled)
+				else
 				{
-					try
+					listener.callback(event);
+				}
+				#elseif cpp
+				if (listener.useWeakReference)
+				{
+					var weakCallback = listener.weakRefCallback.get();
+					if (weakCallback == null)
 					{
-						listener.callback(event);
+						// a weakly referenced callback was garbage collected
+						var indexToRemove = iterator.index - 1;
+						list.splice(indexToRemove, 1);
+						iterator.remove(listener, indexToRemove);
 					}
-					catch (e:Dynamic)
+					else
 					{
-						if (!(event is UncaughtErrorEvent))
-						{
-							Lib.current.stage.__handleError(e);
-						}
+						weakCallback(event);
 					}
 				}
 				else
@@ -459,24 +444,8 @@ class EventDispatcher implements IEventDispatcher
 					listener.callback(event);
 				}
 				#else
-				if (Lib.current != null && Lib.current.stage != null && Lib.current.stage.__uncaughtErrorEvents.__enabled)
-				{
-					try
-					{
-						listener.callback(event);
-					}
-					catch (e:Dynamic)
-					{
-						if (!(event is UncaughtErrorEvent))
-						{
-							Lib.current.stage.__handleError(e);
-						}
-					}
-				}
-				else
-				{
-					listener.callback(event);
-				}
+				// listener.callback (event.clone ());
+				listener.callback(event);
 				#end
 
 				if (event.__isCanceledNow)
@@ -619,6 +588,8 @@ private class Listener
 	public var weakRefCallback:Dynamic;
 
 	private static var supportsWeakReference:Bool = Reflect.hasField(js.Lib.global, "WeakRef");
+	#elseif cpp
+	public var weakRefCallback:cpp.vm.WeakRef<Dynamic->Void>;
 	#end
 
 	public var priority:Int;
@@ -640,6 +611,15 @@ private class Listener
 		{
 			this.callback = callback;
 		}
+		#elseif cpp
+		if (useWeakReference)
+		{
+			this.weakRefCallback = new cpp.vm.WeakRef(callback, false);
+		}
+		else
+		{
+			this.callback = callback;
+		}
 		#else
 		this.callback = callback;
 		#end
@@ -655,6 +635,15 @@ private class Listener
 		if (weakRefCallback != null)
 		{
 			resolvedCallback = weakRefCallback.deref();
+			if (resolvedCallback == null)
+			{
+				return false;
+			}
+		}
+		#elseif cpp
+		if (weakRefCallback != null)
+		{
+			resolvedCallback = weakRefCallback.get();
 			if (resolvedCallback == null)
 			{
 				return false;

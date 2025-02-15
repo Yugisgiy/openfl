@@ -56,7 +56,5 @@ class ServerSocketConnectEvent extends Event
 	}
 }
 #else
-#if air
 typedef ServerSocketConnectEvent = flash.events.ServerSocketConnectEvent;
-#end
 #end

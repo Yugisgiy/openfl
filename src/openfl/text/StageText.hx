@@ -1,6 +1,6 @@
 package openfl.text;
 
-#if (!flash && sys && (!flash_doc_gen || air_doc_gen))
+#if (!flash && sys)
 import openfl.display.BitmapData;
 import openfl.display.Stage;
 import openfl.events.Event;
@@ -37,7 +37,7 @@ import openfl.text.engine.FontWeight;
 	_you cannot use embedded fonts._
 
 	_OpenFL target support:_ On all platforms, except AIR, StageText uses the
-	runtime TextField fallback.
+	runtime TextField.
 
 	_Adobe AIR profile support:_ This feature is supported on iOS and Android
 	platforms. StageText uses native text input fields on Android and iOS mobile

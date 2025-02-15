@@ -1,6 +1,7 @@
 package openfl.display;
 
-#if (!flash && sys && (!flash_doc_gen || air_doc_gen))
+#if (!flash && sys)
+
 #if !openfljs
 /**
 	The FocusDirection class enumerates values to be used for the `direction`

@@ -1,6 +1,7 @@
 package openfl.net;
 
 #if !flash
+
 #if !openfljs
 /**
 	The URLLoaderDataFormat class provides values that specify how downloaded

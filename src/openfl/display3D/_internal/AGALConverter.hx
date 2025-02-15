@@ -1,6 +1,5 @@
 package openfl.display3D._internal;
 
-#if !flash
 import haxe.Int64;
 import openfl.display._internal.SamplerState;
 import openfl.utils._internal.Log;
@@ -751,7 +750,8 @@ class RegisterMap
 					Log.info("Missing switch patten: RegisterUsage.UNUSED");
 
 				case RegisterUsage.SAMPLER_2D_ALPHA:
-					// trace ("Missing switch patten: RegisterUsage.SAMPLER_2D_ALPHA");
+
+				// trace ("Missing switch patten: RegisterUsage.SAMPLER_2D_ALPHA");
 
 				case RegisterUsage.SAMPLER_CUBE_ALPHA:
 			}
@@ -1043,4 +1043,3 @@ private class SourceRegister
 		return str;
 	}
 }
-#end

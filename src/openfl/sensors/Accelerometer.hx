@@ -30,11 +30,6 @@ import lime.system.SensorType;
 	`Accelerometer.isSupported` is `true` at runtime,
 	then Accelerometer support currently exists.
 
-	_OpenFL target support:_ This feature is supported on mobile targets,
-	including iOS and Android, and on the html5 target in browsers that
-	support the devicemotion event. This feature is not supported on desktop
-	targets.
-
 	_Adobe AIR profile support:_ This feature is supported only on mobile
 	devices. It is not supported on desktop or AIR for TV devices. See
 	[AIR Profile Support](http://help.adobe.com/en_US/air/build/WS144092a96ffef7cc16ddeea2126bb46b82f-8000.html)
@@ -58,11 +53,8 @@ import lime.system.SensorType;
 				   * Whenever accelerometer updates are obtained from the
 				  platform at device determined intervals.
 				   * Whenever the application misses a change in the
-				  accelerometer (for example, the runtime is resuming after
+				  accelerometer(for example, the runtime is resuming after
 				  being idle).
-
-
-	@see [Accelerometer input](https://books.openfl.org/openfl-developers-guide/accelerometer-input/)
 **/
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
@@ -86,7 +78,7 @@ class Accelerometer extends EventDispatcher
 
 	/**
 		Specifies whether the user has denied access to the accelerometer
-		(`true`) or allowed access (`false`). When this
+		(`true`) or allowed access(`false`). When this
 		value changes, a `status` event is dispatched.
 	**/
 	public var muted(get, set):Bool;

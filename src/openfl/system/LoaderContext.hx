@@ -25,8 +25,6 @@ package openfl.system;
 	loaded image? If so, see the `checkPolicyFile` property. If you want to
 	apply deblocking when loading an image, use the JPEGLoaderContext class
 	instead of the LoaderContext class.
-
-	@see `openfl.display.Loader`
 **/
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
@@ -97,9 +95,9 @@ class LoaderContext
 		cannot control the choice of application domain into which the loaded
 		SWF file is placed; and if you have specified a choice of application
 		domain, it will be ignored. However, if you are loading a SWF file
-		into your own security domain — either because the SWF file comes
+		into your own security domain � either because the SWF file comes
 		from your own domain, or because you are importing it into your
-		security domain — then you can control the choice of application
+		security domain � then you can control the choice of application
 		domain for the loaded SWF file.
 
 		You can pass an application domain only from your own security domain
@@ -156,7 +154,7 @@ class LoaderContext
 		using `ApplicationDomain.currentDomain.parentDomain`.
 
 		For more information, see the "ApplicationDomain class" section of the
-		"Client System Environment" chapter of the _OpenFL
+		"Client System Environment" chapter of the _ActionScript 3.0
 		Developer's Guide_.
 	**/
 	public var applicationDomain:ApplicationDomain;
@@ -272,6 +270,7 @@ class LoaderContext
 	**/
 	// @:noCompletion @:dox(hide) @:require(flash11) public var imageDecodingPolicy:openfl.system.ImageDecodingPolicy;
 	#end
+
 	#if false
 	/**
 		An Object containing the parameters to pass to the LoaderInfo object
@@ -320,6 +319,7 @@ class LoaderContext
 	**/
 	// @:noCompletion @:dox(hide) @:require(flash11) public var parameters:Dynamic;
 	#end
+
 	#if false
 	/**
 		The parent to which the Loader will attempt to add the loaded content.
@@ -398,8 +398,8 @@ class LoaderContext
 		Content in the AIR application security sandbox cannot load content
 		from other sandboxes into its SecurityDomain.
 
-		For more information, see the "Security" chapter in the _Haxe
-		Developer's Guide_.
+		For more information, see the "Security" chapter in the _ActionScript
+		3.0 Developer's Guide_.
 	**/
 	public var securityDomain:SecurityDomain;
 

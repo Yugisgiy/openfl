@@ -1,6 +1,7 @@
 package openfl.display;
 
 #if !flash
+
 #if !openfljs
 /**
 	Defines codes for culling algorithms that determine which triangles not to

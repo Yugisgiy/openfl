@@ -94,7 +94,5 @@ class DatagramSocketDataEvent extends Event
 	}
 }
 #else
-#if air
 typedef DatagramSocketDataEvent = flash.events.DatagramSocketDataEvent;
-#end
 #end
