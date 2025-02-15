@@ -2,7 +2,7 @@
 
 
 <br />
-<h1 align="center"><img src="assets/openfl.png" alt="OpenFL"/></h1>
+<p align="center"><img src="assets/openfl.png"/></p>
 
 
 Introduction
@@ -42,7 +42,7 @@ _Additional details on console support will be available in the future._
 
 OpenFL is also being used in additional environments:
 
- * [TiVo](https://www.tivo.com) boxes
+ * [TiVo](http://www.tivo.com) boxes
  * Raspberry Pi
  * Node.js
 
@@ -153,12 +153,3 @@ To return to release builds:
     haxelib dev openfl
 
 You may also need a development build of Lime installed.
-
-
-Join the Community
-==================
-
-Have a question? Want a new place to hang out?
-
- * [Forums](https://community.openfl.org)
- * [Discord](https://discordapp.com/invite/tDgq8EE)

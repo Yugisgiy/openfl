@@ -294,9 +294,7 @@ class TextEngine
 		var textHeight = textHeight * 1.185; // measurement isn't always accurate, add padding
 		#end
 
-		// don't add 4 to bounds.width and bounds.height here because the + 4
-		// is already included from a previous calculation
-		textBounds.setTo(Math.max(x - 2, 0), Math.max(y - 2, 0), Math.min(textWidth + 4, bounds.width), Math.min(textHeight + 4, bounds.height));
+		textBounds.setTo(Math.max(x - 2, 0), Math.max(y - 2, 0), Math.min(textWidth + 4, bounds.width + 4), Math.min(textHeight + 4, bounds.height + 4));
 	}
 
 	private static function getDefaultFont(name:String, bold:Bool, italic:Bool):Font
@@ -680,10 +678,7 @@ class TextEngine
 		if (textHeight == 0 && textField != null && type == INPUT)
 		{
 			var currentFormat = textField.__textFormat;
-			var ascent:Float;
-			var descent:Float;
-			var leading:Int;
-			var heightValue:Int;
+			var ascent, descent, leading, heightValue;
 
 			var font = getFontInstance(currentFormat);
 
@@ -1254,13 +1249,11 @@ class TextEngine
 			// breaks up words that are too long to fit in a single line
 
 			var remainingPositions = positions;
-			var bufferCount:Int;
-			var placeIndex:Int;
-			var positionWidth:Float;
+			var i, bufferCount, placeIndex, positionWidth;
 			var currentPosition:#if (js && html5) Float #else GlyphPosition #end;
 
 			var tempWidth = getPositionsWidth(remainingPositions);
-			var i = remainingPositions.length - 1;
+			i = remainingPositions.length - 1;
 			while (i >= 0)
 			{
 				// strip away the combined width of whitespace at the end of the
@@ -1724,8 +1717,7 @@ class TextEngine
 		var lineIndex = -1;
 		var offsetX = 0.0;
 		var totalWidth = this.width - 4; // TODO: do margins and stuff affect this?
-		var group:TextLayoutGroup;
-		var lineLength:Int;
+		var group, lineLength;
 		var lineMeasurementsDirty = false;
 
 		for (i in 0...layoutGroups.length)

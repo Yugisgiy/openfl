@@ -646,8 +646,7 @@ class DisplayObjectRenderer extends EventDispatcher
 						// var sourceRect = bitmap.rect;
 						// if (__tempPoint == null) __tempPoint = new Point ();
 						// var destPoint = __tempPoint;
-						var shader:Shader;
-						var cacheBitmap:BitmapData;
+						var shader, cacheBitmap;
 
 						for (filter in displayObject.__filters)
 						{
@@ -763,8 +762,7 @@ class DisplayObjectRenderer extends EventDispatcher
 
 						if (displayObject.__tempPoint == null) displayObject.__tempPoint = new Point();
 						var destPoint = displayObject.__tempPoint;
-						var cacheBitmap:BitmapData;
-						var lastBitmap:BitmapData;
+						var cacheBitmap, lastBitmap;
 
 						for (filter in displayObject.__filters)
 						{

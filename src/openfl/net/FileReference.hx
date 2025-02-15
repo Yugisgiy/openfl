@@ -302,10 +302,6 @@ import js.Browser;
 							  server after a successful upload. This event is
 							  not dispatched if data is not returned from the
 							  server.
-
-	@see [Using the FileReference class](https://books.openfl.org/openfl-developers-guide/working-with-the-file-system/using-the-filereference-class.html)
-	@see `openfl.net.FileReferenceList`
-	@see `openfl.filesystem.File`
 **/
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
@@ -691,8 +687,8 @@ class FileReference extends EventDispatcher
 		HTTPS.
 
 		You cannot connect to commonly reserved ports. For a complete list of
-		blocked ports, see "Restricting Networking APIs" in the _OpenFL
-		Developer's Guide_.
+		blocked ports, see "Restricting Networking APIs" in the _ActionScript
+		3.0 Developer's Guide_.
 
 		**Note**: If your server requires user authentication, only SWF files
 		running in a browser ?that is, using the browser plug-in or ActiveX
@@ -722,7 +718,9 @@ class FileReference extends EventDispatcher
 		these security limitations.
 
 		For more information related to security, see the Flash Player
-		Developer Center Topic: [Security](http://www.adobe.com/go/devnet_security_en).
+		Developer Center Topic: <a
+		href="http://www.adobe.com/go/devnet_security_en"
+		scope="external">Security</a>.
 
 		When you download a file using this method, it is flagged as
 		downloaded on operating systems that flag downloaded files:
@@ -811,7 +809,7 @@ class FileReference extends EventDispatcher
 		@throws SecurityError         You cannot connect to commonly reserved
 									  ports. For a complete list of blocked
 									  ports, see "Restricting Networking APIs"
-									  in the _OpenFL Developer's
+									  in the _ActionScript 3.0 Developer's
 									  Guide_.
 		@event cancel        Dispatched when the user dismisses the dialog
 							 box.
@@ -837,8 +835,6 @@ class FileReference extends EventDispatcher
 							 security error.
 		@event select        Dispatched when the user selects a file for
 							 download from the dialog box.
-
-		@see [Downloading files from a server](https://books.openfl.org/openfl-developers-guide/working-with-the-file-system/using-the-filereference-class.html#downloading-files-from-a-server)
 	**/
 	public function download(request:URLRequest, defaultFileName:String = null):Void
 	{
@@ -944,9 +940,6 @@ class FileReference extends EventDispatcher
 		@event open     Dispatched when an load operation starts.
 		@event progress Dispatched periodically during the file load
 						operation.
-
-		@see [Loading data from files](https://books.openfl.org/openfl-developers-guide/working-with-the-file-system/using-the-filereference-class.html#loading-data-from-files)
-		@see [Using the load() and save() methods](https://books.openfl.org/openfl-developers-guide/working-with-the-file-system/using-the-load-and-save-methods.html)
 	**/
 	public function load():Void
 	{
@@ -963,10 +956,6 @@ class FileReference extends EventDispatcher
 		{
 			data = ByteArray.fromArrayBuffer(cast evt.target.result);
 			openFileDialog_onComplete();
-		}
-		reader.onerror = function(evt)
-		{
-			dispatchEvent(new IOErrorEvent(IOErrorEvent.IO_ERROR));
 		}
 		reader.readAsArrayBuffer(file);
 		#end
@@ -1072,9 +1061,6 @@ class FileReference extends EventDispatcher
 						operation.
 		@event select   Dispatched when the user selects a file for download
 						from the dialog box.
-
-		@see [Saving data to local files](https://books.openfl.org/openfl-developers-guide/working-with-the-file-system/using-the-filereference-class.html#saving-data-to-local-files)
-		@see [Using the load() and save() methods](https://books.openfl.org/openfl-developers-guide/working-with-the-file-system/using-the-load-and-save-methods.html)
 	**/
 	public function save(data:Dynamic, defaultFileName:String = null):Void
 	{
@@ -1120,6 +1106,7 @@ class FileReference extends EventDispatcher
 		#end
 	}
 
+	#if (sys || !openfl_strict)
 	/**
 		Starts the upload of the file to a remote server. Although Flash
 		Player has no restriction on the size of files you can upload or
@@ -1158,8 +1145,8 @@ class FileReference extends EventDispatcher
 		* The binary contents of the file
 
 		You cannot connect to commonly reserved ports. For a complete list of
-		blocked ports, see "Restricting Networking APIs" in the _OpenFL
-		Developer's Guide_.
+		blocked ports, see "Restricting Networking APIs" in the _ActionScript
+		3.0 Developer's Guide_.
 
 		For a sample `POST` request, see the description of the
 		`uploadDataFieldName` parameter. You can send `POST` or `GET`
@@ -1198,7 +1185,9 @@ class FileReference extends EventDispatcher
 		these security limitations.
 
 		For more information related to security, see the Flash Player
-		Developer Center Topic: [Security](http://www.adobe.com/go/devnet_security_en).
+		Developer Center Topic: <a
+		href="http://www.adobe.com/go/devnet_security_en"
+		scope="external">Security</a>.
 
 		Note that because of new functionality added to the Flash Player, when
 		publishing to Flash Player 10, you can have only one of the following
@@ -1306,7 +1295,7 @@ class FileReference extends EventDispatcher
 		@throws SecurityError         You cannot connect to commonly reserved
 									  ports. For a complete list of blocked
 									  ports, see "Restricting Networking APIs"
-									  in the _OpenFL Developer's
+									  in the _ActionScript 3.0 Developer's
 									  Guide_.
 		@event complete           Dispatched when the file upload operation
 								  completes successfully.
@@ -1336,8 +1325,6 @@ class FileReference extends EventDispatcher
 								  security violation.
 		@event uploadCompleteData Dispatched when data has been received from
 								  the server after a successful file upload.
-
-		@see [Uploading files to a server](https://books.openfl.org/openfl-developers-guide/working-with-the-file-system/using-the-filereference-class.html#uploading-files-to-a-server)
 	**/
 	public function upload(request:URLRequest, uploadDataFieldName:String = "Filedata", testUpload:Bool = false):Void
 	{
@@ -1347,6 +1334,7 @@ class FileReference extends EventDispatcher
 			dispatchEvent(new IOErrorEvent(IOErrorEvent.IO_ERROR));
 			return;
 		}
+
 		var fileBytes:ByteArray = null;
 		try
 		{
@@ -1357,26 +1345,6 @@ class FileReference extends EventDispatcher
 			dispatchEvent(new IOErrorEvent(IOErrorEvent.IO_ERROR));
 			return;
 		}
-		__uploadFileBytes(request, uploadDataFieldName, fileBytes);
-		#elseif (js && html5)
-		var file = __inputControl.files[0];
-		var reader = new FileReader();
-		reader.onload = function(evt)
-		{
-			var fileBytes = ByteArray.fromArrayBuffer(cast evt.target.result);
-			__uploadFileBytes(request, uploadDataFieldName, fileBytes);
-		}
-		reader.onerror = function(evt)
-		{
-			dispatchEvent(new IOErrorEvent(IOErrorEvent.IO_ERROR));
-		}
-		#else
-		openfl.utils._internal.Lib.notImplemented();
-		#end
-	}
-
-	private function __uploadFileBytes(request:URLRequest, uploadDataFieldName:String, fileBytes:ByteArray):Void
-	{
 		var hasUrlVars = Type.typeof(request.data) == Type.ValueType.TObject;
 		if (hasUrlVars && request.method == URLRequestMethod.GET)
 		{
@@ -1439,7 +1407,11 @@ class FileReference extends EventDispatcher
 		urlLoader.addEventListener(ProgressEvent.PROGRESS, urlLoader_onProgress);
 		urlLoader.addEventListener(IOErrorEvent.IO_ERROR, urlLoader_onIOError);
 		urlLoader.load(request);
+		#else
+		openfl.utils._internal.Lib.notImplemented();
+		#end
 	}
+	#end
 
 	// Event Handlers
 	@:noCompletion private function openFileDialog_onCancel():Void

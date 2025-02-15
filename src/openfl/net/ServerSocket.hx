@@ -8,7 +8,6 @@ import openfl.errors.IOError;
 import openfl.errors.RangeError;
 import openfl.errors.Error as OFLError;
 import openfl.events.Event;
-import openfl.events.EventType;
 import openfl.events.EventDispatcher;
 import openfl.events.ServerSocketConnectEvent;
 import openfl.net.Socket as OFLSocket;
@@ -145,12 +144,10 @@ class ServerSocket extends EventDispatcher
 		}
 		try
 		{
+			this.localAddress = localAddress;
+			this.localPort = localPort;
 			var host:Host = new Host(localAddress);
 			__serverSocket.bind(host, localPort);
-
-			var serverHost = __serverSocket.host();
-			this.localAddress = serverHost.host.host != null ? serverHost.host.host : localAddress;
-			this.localPort = serverHost.port;
 			bound = true;
 		}
 		catch (e:Dynamic)
@@ -174,21 +171,18 @@ class ServerSocket extends EventDispatcher
 	**/
 	public function close():Void
 	{
-		if (!__closed)
+		try
 		{
-			try
-			{
-				__serverSocket.close();
-			}
-			catch (e:Dynamic)
-			{
-				throw new OFLError("Operation attempted on invalid socket.");
-			}
-			listening = false;
-			bound = false;
-			__closed = true;
-			Lib.current.removeEventListener(Event.ENTER_FRAME, this_onEnterFrame);
+			__serverSocket.close();
 		}
+		catch (e:Dynamic)
+		{
+			throw new OFLError("Operation attempted on invalid socket.");
+		}
+		listening = false;
+		bound = false;
+		__closed = true;
+		Lib.current.removeEventListener(Event.ENTER_FRAME, this_onEnterFrame);
 	}
 
 	/**
@@ -228,12 +222,7 @@ class ServerSocket extends EventDispatcher
 		{
 			// Setting haxe tcp backlog to 0 doesn't seem to force the maximum limit as it does in
 			// AIR so instead we set it to maximum integer which should clamp it to the maximum limit.
-			#if neko
-			// neko throws std@socket_listen if this value is too large
-			backlog = 0x3FFFFFFF;
-			#else
 			backlog = 0x7FFFFFFF;
-			#end
 		}
 
 		__serverSocket.listen(backlog);
@@ -288,19 +277,18 @@ class ServerSocket extends EventDispatcher
 		}
 	}
 
-	override public function addEventListener<T>(type:EventType<T>, listener:Dynamic->Void, useCapture:Bool = false, priority:Int = 0,
+	override public function addEventListener(type:String, listener:Dynamic->Void, useCapture:Bool = false, priority:Int = 0,
 			useWeakReference:Bool = false):Void
 	{
-		var connectEvent:String = Event.CONNECT;
 		super.addEventListener(type, listener, useCapture, priority, useWeakReference);
 
-		if (type == connectEvent && this.hasEventListener(connectEvent))
+		if (type == Event.CONNECT)
 		{
 			Lib.current.addEventListener(Event.ENTER_FRAME, this_onEnterFrame);
 		}
 	}
 
-	override public function removeEventListener<T>(type:EventType<T>, listener:Dynamic->Void, useCapture:Bool = false):Void
+	override public function removeEventListener(type:String, listener:Dynamic->Void, useCapture:Bool = false):Void
 	{
 		super.removeEventListener(type, listener, useCapture);
 

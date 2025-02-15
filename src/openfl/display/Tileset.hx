@@ -220,10 +220,7 @@ class Tileset
 @:noDebug
 #end
 @SuppressWarnings("checkstyle:FieldDocComment")
-@:allow(openfl.display.Tileset)
-@:dox(hide)
-@:noCompletion
-class TileData
+@:allow(openfl.display.Tileset) @:dox(hide) private class TileData
 {
 	public var height:Int;
 	public var width:Int;

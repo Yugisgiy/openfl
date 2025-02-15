@@ -1,6 +1,7 @@
 package openfl.display;
 
 #if !flash
+
 #if !openfljs
 /**
 	The JointStyle class is an enumeration of constant values that specify the

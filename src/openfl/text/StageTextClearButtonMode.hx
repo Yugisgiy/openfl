@@ -1,6 +1,7 @@
 package openfl.text;
 
-#if (!flash && sys && (!flash_doc_gen || air_doc_gen))
+#if (!flash && sys)
+
 #if !openfljs
 /**
 	The StageTextClearButtonMode class defines the values to use for the

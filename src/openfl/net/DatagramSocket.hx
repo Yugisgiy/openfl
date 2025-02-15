@@ -9,7 +9,6 @@ import openfl.errors.IllegalOperationError;
 import openfl.errors.RangeError;
 import openfl.events.DatagramSocketDataEvent;
 import openfl.events.Event;
-import openfl.events.EventType;
 import openfl.events.EventDispatcher;
 #if !js
 import openfl.utils.ByteArray;
@@ -158,7 +157,7 @@ class DatagramSocket extends EventDispatcher
 			switch (e)
 			{
 				case "Bind failed":
-					dispatchEvent(new Event(Event.CLOSE));
+					throw new IOError("Operation attempted on invalid socket.");
 				case "Unresolved host":
 					throw new ArgumentError("One of the parameters is invalid");
 			}
@@ -184,8 +183,6 @@ class DatagramSocket extends EventDispatcher
 		__isReceiving = false;
 		bound = false;
 		Lib.current.removeEventListener(Event.ENTER_FRAME, __onFrameUpdate);
-
-		dispatchEvent(new Event(Event.CLOSE));
 	}
 
 	/**
@@ -322,19 +319,17 @@ class DatagramSocket extends EventDispatcher
 		}
 	}
 
-	override public function addEventListener<T>(type:EventType<T>, listener:Dynamic->Void, useCapture:Bool = false, priority:Int = 0,
+	override public function addEventListener(type:String, listener:Dynamic->Void, useCapture:Bool = false, priority:Int = 0,
 			useWeakReference:Bool = false):Void
 	{
-		var dataEvent:String = DatagramSocketDataEvent.DATA;
 		super.addEventListener(type, listener, useCapture, priority, useWeakReference);
-
-		if (type == dataEvent && !this.hasEventListener(dataEvent))
+		if (type == DatagramSocketDataEvent.DATA)
 		{
 			Lib.current.addEventListener(Event.ENTER_FRAME, __onFrameUpdate);
 		}
 	}
 
-	override public function removeEventListener<T>(type:EventType<T>, listener:Dynamic->Void, useCapture:Bool = false):Void
+	override public function removeEventListener(type:String, listener:Dynamic->Void, useCapture:Bool = false):Void
 	{
 		super.removeEventListener(type, listener, useCapture);
 		if (type == DatagramSocketDataEvent.DATA)
@@ -388,24 +383,11 @@ class DatagramSocket extends EventDispatcher
 
 	@:noCompletion private function get_localAddress():String
 	{
-		#if neko
-		try
+		if (bound)
 		{
-			return __udpSocket.host().host.host;
+			return __udpSocket.host().host.toString();
 		}
-		catch (e:Dynamic)
-		{
-			return null;
-		}
-		#else
-		var host = __udpSocket.host();
-
-		if (host == null)
-		{
-			return null;
-		}
-		return host.host.host;
-		#end
+		return null;
 	}
 
 	@:noCompletion private function get_localPort():Int
@@ -419,24 +401,11 @@ class DatagramSocket extends EventDispatcher
 
 	@:noCompletion private function get_remoteAddress():String
 	{
-		#if neko
-		try
+		if (connected)
 		{
-			return __udpSocket.peer().host.host;
+			return __udpSocket.peer().host.toString();
 		}
-		catch (e:Dynamic)
-		{
-			return null;
-		}
-		#else
-		var host = __udpSocket.peer();
-
-		if (host == null)
-		{
-			return "";
-		}
-		return host.host.host;
-		#end
+		return null;
 	}
 
 	@:noCompletion private function get_remotePort():Int

@@ -1,6 +1,7 @@
 package openfl.text;
 
 #if !flash
+
 #if !openfljs
 /**
 	The TextFieldAutoSize class is an enumeration of constant values used in
