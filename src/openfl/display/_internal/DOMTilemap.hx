@@ -1,8 +1,5 @@
 package openfl.display._internal;
 
-#if !flash
-import openfl.geom.Matrix;
-import openfl.display._internal.CanvasDisplayObject;
 import openfl.display._internal.CanvasTilemap;
 import openfl.display.DOMRenderer;
 import openfl.display.Tilemap;
@@ -20,7 +17,10 @@ class DOMTilemap
 	public static function clear(tilemap:Tilemap, renderer:DOMRenderer):Void
 	{
 		#if (js && html5)
-		DOMDisplayObject.clear(tilemap, renderer);
+		if (tilemap.__cacheBitmap != null)
+		{
+			DOMBitmap.clear(tilemap.__cacheBitmap, renderer);
+		}
 
 		if (tilemap.__canvas != null)
 		{
@@ -33,7 +33,7 @@ class DOMTilemap
 
 	public static inline function render(tilemap:Tilemap, renderer:DOMRenderer):Void
 	{
-		// TODO: Support GL or Image-based Tilemap?
+		// TODO: Support GL-based Tilemap?
 
 		#if (js && html5)
 		if (tilemap.stage != null && tilemap.__worldVisible && tilemap.__renderable && tilemap.__group.__tiles.length > 0)
@@ -49,13 +49,9 @@ class DOMTilemap
 			tilemap.__canvas.height = tilemap.__height;
 
 			renderer.__canvasRenderer.context = tilemap.__context;
-			var cacheRenderTransform = tilemap.__renderTransform;
-			tilemap.__renderTransform = Matrix.__identity;
 
-			CanvasDisplayObject.render(tilemap, renderer.__canvasRenderer);
 			CanvasTilemap.render(tilemap, renderer.__canvasRenderer);
 
-			tilemap.__renderTransform = cacheRenderTransform;
 			renderer.__canvasRenderer.context = null;
 
 			renderer.__updateClip(tilemap);
@@ -81,7 +77,7 @@ class DOMTilemap
 		}
 		else
 		{
-			// DOMDisplayObject.render(tilemap, renderer);
+			DOMDisplayObject.render(tilemap, renderer);
 			DOMTilemap.render(tilemap, renderer);
 		}
 
@@ -93,4 +89,3 @@ class DOMTilemap
 		DOMTilemap.clear(tilemap, renderer);
 	}
 }
-#end

@@ -1,6 +1,7 @@
 package openfl.utils;
 
-import haxe.Int64;
+import haxe.Constraints.IMap;
+import haxe.ds.ObjectMap;
 import haxe.io.Bytes;
 import haxe.io.BytesData;
 import haxe.io.BytesInput;
@@ -11,20 +12,22 @@ import haxe.Serializer;
 import haxe.Unserializer;
 import openfl.errors.EOFError;
 import openfl.net.ObjectEncoding;
-import openfl.utils._internal.format.amf.AMFReader;
-import openfl.utils._internal.format.amf.AMFTools;
-import openfl.utils._internal.format.amf.AMFWriter;
-import openfl.utils._internal.format.amf.AMFValue;
-import openfl.utils._internal.format.amf3.AMF3Reader;
-import openfl.utils._internal.format.amf3.AMF3Tools;
-import openfl.utils._internal.format.amf3.AMF3Value;
-import openfl.utils._internal.format.amf3.AMF3Writer;
 #if lime
 import lime.system.System;
 import lime.utils.ArrayBuffer;
 import lime.utils.BytePointer;
 import lime.utils.Bytes as LimeBytes;
 import lime.utils.DataPointer;
+#end
+#if format
+import format.amf.Reader as AMFReader;
+import format.amf.Tools as AMFTools;
+import format.amf.Writer as AMFWriter;
+import format.amf.Value as AMFValue;
+import format.amf3.Reader as AMF3Reader;
+import format.amf3.Tools as AMF3Tools;
+import format.amf3.Value as AMF3Value;
+import format.amf3.Writer as AMF3Writer;
 #end
 
 /**
@@ -56,9 +59,6 @@ import lime.utils.DataPointer;
 	* Optimizing the size of your data by using data types.
 	* Working with binary data loaded from a local file.
 	* Supporting new binary file formats.
-
-	@see [Working with byte arrays](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/)
-	@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 **/
 @:access(haxe.io.Bytes)
 @:access(openfl.utils.ByteArrayData)
@@ -93,7 +93,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 		When an object is written to or read from binary data, the
 		`objectEncoding` value is used to determine whether the
-		Haxe Serialization Format, JSON, AMF0, or AMF3
+		Haxe, JavaScript, ActionScript 3.0, ActionScript 2.0 or ActionScript 1.0
 		format should be used. The value is a constant from the ObjectEncoding
 		class.
 	**/
@@ -134,8 +134,8 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 	#if openfl_doc_gen
 	/**
-		* Used to determine whether the Haxe Serialization Format, JSON, AMF0,
-		* or AMF3 format should be used when writing to, or reading from, a
+		* Used to determine whether the ActionScript 3.0, ActionScript 2.0, or
+		* ActionScript 1.0 format should be used when writing to, or reading from, a
 		* ByteArray instance. The value is a constant from the ObjectEncoding class.
 
 		* On the Flash and AIR targets, support for Action Message Format (AMF) object
@@ -191,7 +191,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 	/**
 		Compresses the byte array. The entire byte array is compressed. For
 		content running in Adobe AIR, you can specify a compression algorithm by
-		passing a value (defined in the CompressionAlgorithm class) as the
+		passing a value(defined in the CompressionAlgorithm class) as the
 		`algorithm` parameter. Flash Player supports only the default
 		algorithm, zlib.
 
@@ -209,7 +209,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		formats, such as zlib, gzip, some zip implementations, and others. When
 		data is compressed using one of those compression formats, in addition to
 		storing the compressed version of the original data, the compression
-		format data (for example, the .zip file) includes metadata information.
+		format data(for example, the .zip file) includes metadata information.
 		Some examples of the types of metadata included in various file formats
 		are file name, file modification date/time, original file size, optional
 		comments, checksum data, and more.
@@ -218,7 +218,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		the resulting ByteArray is structured in a specific format. Certain bytes
 		contain metadata about the compressed data, while other bytes contain the
 		actual compressed version of the original ByteArray data. As defined by
-		the zlib compressed data format specification, those bytes (that is, the
+		the zlib compressed data format specification, those bytes(that is, the
 		portion containing the compressed version of the original data) are
 		compressed using the deflate algorithm. Consequently those bytes are
 		identical to the result of calling `compress(<ph
@@ -472,8 +472,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		@return Returns `true` if the byte is nonzero,
 				`false` otherwise.
 		@throws EOFError There is not sufficient data available to read.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function readBoolean():Bool
 	{
@@ -487,8 +485,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 		@return An integer between -128 and 127.
 		@throws EOFError There is not sufficient data available to read.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function readByte():Int
 	{
@@ -503,15 +499,13 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		by `offset`.
 
 		@param bytes  The ByteArray object to read data into.
-		@param offset The offset (position) in `bytes` at which the
+		@param offset The offset(position) in `bytes` at which the
 					  read data should be written.
 		@param length The number of bytes to read. The default value of 0 causes
 					  all available data to be read.
 		@throws EOFError   There is not sufficient data available to read.
 		@throws RangeError The value of the supplied offset and length, combined,
 						   is greater than the maximum for a uint.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function readBytes(bytes:ByteArray, offset:UInt = 0, length:UInt = 0):Void
 	{
@@ -524,8 +518,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 		@return A double-precision(64-bit) floating-point number.
 		@throws EOFError There is not sufficient data available to read.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function readDouble():Float
 	{
@@ -538,8 +530,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 		@return A single-precision(32-bit) floating-point number.
 		@throws EOFError There is not sufficient data available to read.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function readFloat():Float
 	{
@@ -553,23 +543,10 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 		@return A 32-bit signed integer between -2147483648 and 2147483647.
 		@throws EOFError There is not sufficient data available to read.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function readInt():Int
 	{
 		return this.readInt();
-	}
-
-	/**
-		Reads a signed 64-bit integer from the byte stream.
-		The returned value is in the range −9223372036854775808 to 9223372036854775807.
-		@return A 64-bit signed integer between −9223372036854775808 to 9223372036854775807.
-		@throws EOFError There is not sufficient data available to read.
-	**/
-	public inline function readInt64():Int64
-	{
-		return this.readInt64();
 	}
 
 	/**
@@ -596,8 +573,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 					   default code page.
 		@return UTF-8 encoded string.
 		@throws EOFError There is not sufficient data available to read.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function readMultiByte(length:UInt, charSet:String):String
 	{
@@ -609,8 +584,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 		@return The deserialized object.
 		@throws EOFError There is not sufficient data available to read.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function readObject():Dynamic
 	{
@@ -624,8 +597,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 		@return A 16-bit signed integer between -32768 and 32767.
 		@throws EOFError There is not sufficient data available to read.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function readShort():Int
 	{
@@ -638,8 +609,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 		@return UTF-8 encoded string.
 		@throws EOFError There is not sufficient data available to read.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function readUTF():String
 	{
@@ -653,8 +622,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		@param length An unsigned short indicating the length of the UTF-8 bytes.
 		@return A string composed of the UTF-8 bytes of the specified length.
 		@throws EOFError There is not sufficient data available to read.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function readUTFBytes(length:UInt):String
 	{
@@ -668,8 +635,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 		@return A 32-bit unsigned integer between 0 and 255.
 		@throws EOFError There is not sufficient data available to read.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function readUnsignedByte():UInt
 	{
@@ -683,8 +648,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 		@return A 32-bit unsigned integer between 0 and 4294967295.
 		@throws EOFError There is not sufficient data available to read.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function readUnsignedInt():UInt
 	{
@@ -698,8 +661,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 		@return A 16-bit unsigned integer between 0 and 65535.
 		@throws EOFError There is not sufficient data available to read.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function readUnsignedShort():UInt
 	{
@@ -813,7 +774,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 	/**
 		Decompresses the byte array. For content running in Adobe AIR, you can
-		specify a compression algorithm by passing a value (defined in the
+		specify a compression algorithm by passing a value(defined in the
 		CompressionAlgorithm class) as the `algorithm` parameter. The
 		byte array must have been compressed using the same algorithm. Flash
 		Player supports only the default algorithm, zlib.
@@ -856,8 +817,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		@param value A Boolean value determining which byte is written. If the
 					 parameter is `true`, the method writes a 1; if
 					 `false`, the method writes a 0.
-
-					 @see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function writeBoolean(value:Bool):Void
 	{
@@ -872,8 +831,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 		@param value A 32-bit integer. The low 8 bits are written to the byte
 					 stream.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function writeByte(value:Int):Void
 	{
@@ -898,8 +855,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 					  begin writing.
 		@param length An unsigned integer indicating how far into the buffer to
 					  write.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function writeBytes(bytes:ByteArray, offset:UInt = 0, length:UInt = 0):Void
 	{
@@ -911,8 +866,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		byte stream.
 
 		@param value A double-precision(64-bit) floating-point number.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function writeDouble(value:Float):Void
 	{
@@ -924,8 +877,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		byte stream.
 
 		@param value A single-precision(32-bit) floating-point number.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function writeFloat(value:Float):Void
 	{
@@ -936,21 +887,10 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		Writes a 32-bit signed integer to the byte stream.
 
 		@param value An integer to write to the byte stream.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function writeInt(value:Int):Void
 	{
 		this.writeInt(value);
-	}
-
-	/**
-		Writes a 64-bit signed integer to the byte stream.
-		@param value An integer to write to the byte stream.
-	**/
-	public inline function writeInt64(value:Int64):Void
-	{
-		this.writeInt64(value);
 	}
 
 	/**
@@ -964,8 +904,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 					   others. For a complete list, see <a
 					   href="../../charset-codes.html">Supported Character
 					   Sets</a>.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function writeMultiByte(value:String, charSet:String):Void
 	{
@@ -976,8 +914,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		Writes an object into the byte array in AMF serialized format.
 
 		@param object The object to serialize.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function writeObject(object:Dynamic):Void
 	{
@@ -990,8 +926,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 		@param value 32-bit integer, whose low 16 bits are written to the byte
 					 stream.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function writeShort(value:Int):Void
 	{
@@ -1005,8 +939,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 		@param value The string value to be written.
 		@throws RangeError If the length is larger than 65535.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function writeUTF(value:String):Void
 	{
@@ -1019,8 +951,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		prefix the string with a 16-bit length word.
 
 		@param value The string value to be written.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function writeUTFBytes(value:String):Void
 	{
@@ -1031,8 +961,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		Writes a 32-bit unsigned integer to the byte stream.
 
 		@param value An unsigned integer to write to the byte stream.
-
-		@see [Reading and writing a byte array](https://books.openfl.org/openfl-developers-guide/working-with-byte-arrays/reading-and-writing-a-byte-array.html)
 	**/
 	public inline function writeUnsignedInt(value:UInt):Void
 	{
@@ -1079,8 +1007,8 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 	{
 		#if display
 		return 0;
-		#elseif openfljs
-		return this == null ? 0 : this.__length;
+		#elseif lime_bytes_length_getter
+		return this == null ? 0 : this.l;
 		#else
 		return this == null ? 0 : this.length;
 		#end
@@ -1091,18 +1019,16 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		#if display
 		#elseif flash
 		this.length = value;
+		#elseif lime_bytes_length_getter
+		this.length = value;
 		#else
-		if (value >= 0)
+		if (value > 0)
 		{
 			this.__resize(value);
 			if (value < this.position) this.position = value;
 		}
 
-		#if openfljs
-		this.__length = value;
-		#else
 		this.length = value;
-		#end
 		#end
 
 		return value;
@@ -1148,55 +1074,34 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 	public var position:Int;
 
 	@:noCompletion private var __endian:Endian;
-
-	/**
-		The number of bytes allocated. May be ~50% larger than `length`.
-	**/
-	@:noCompletion private var __allocated:Int;
-
-	@:noCompletion private var __amf3Reader:AMF3Reader;
-
-	/**
-		An alias for `length`, except guaranteed not to have side effects. This
-		matters in openfljs mode, where setting `length` calls`__resize()`, but
-		setting `__length` does not.
-	**/
-	#if openfljs
 	@:noCompletion private var __length:Int;
-	#else
-	@:noCompletion private var __length(get, set):Int;
-	#end
 
-	#if openfljs
+	#if lime_bytes_length_getter
 	@:noCompletion private static function __init__()
 	{
 		untyped global.Object.defineProperty(ByteArrayData, "defaultEndian", {
-			get: ByteArrayData.get_defaultEndian,
-			set: ByteArrayData.set_defaultEndian
+			get: function()
+			{
+				return ByteArrayData.get_defaultEndian();
+			},
+			set: function(v)
+			{
+				return ByteArrayData.set_defaultEndian(v);
+			}
 		});
 		untyped global.Object.defineProperties(ByteArrayData.prototype, {
 			"bytesAvailable": {
-				get: ByteArrayData.prototype.get_bytesAvailable
+				get: untyped #if haxe4 js.Syntax.code #else __js__ #end ("function () { return this.get_bytesAvailable (); }")
 			},
 			"endian": {
-				get: ByteArrayData.prototype.get_endian,
-				set: ByteArrayData.prototype.set_endian
+				get: untyped #if haxe4 js.Syntax.code #else __js__ #end ("function () { return this.get_endian (); }"),
+				set: untyped #if haxe4 js.Syntax.code #else __js__ #end ("function (v) { return this.set_endian (v); }")
 			},
 			"length": {
-				get: ByteArrayData.prototype.openfljs_get_length,
-				set: ByteArrayData.prototype.openfljs_set_length
-			}
+				get: untyped #if haxe4 js.Syntax.code #else __js__ #end ("function () { return this.get_length (); }"),
+				set: untyped #if haxe4 js.Syntax.code #else __js__ #end ("function (v) { return this.set_length (v); }")
+			},
 		});
-	}
-
-	private function openfljs_get_length():Int
-	{
-		return __length;
-	}
-
-	private function openfljs_set_length(value:Int):Int
-	{
-		return (this : ByteArray).length = value;
 	}
 	#end
 
@@ -1219,10 +1124,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		super(length, bytes.getData());
 		#end
 
-		#if openfljs
 		__length = length;
-		#end
-		__allocated = length;
 
 		endian = defaultEndian;
 		objectEncoding = defaultObjectEncoding;
@@ -1231,7 +1133,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 	public function clear():Void
 	{
-		__length = 0;
+		length = 0;
 		position = 0;
 	}
 
@@ -1239,14 +1141,22 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 	{
 		#if lime
 		#if js
-		if (__allocated > __length)
+		if (__length > #if lime_bytes_length_getter l #else length #end)
 		{
-			var cacheLength = __length;
-			__length = __allocated;
+			var cacheLength = #if lime_bytes_length_getter l #else length #end;
+			#if lime_bytes_length_getter
+			this.l = __length;
+			#else
+			this.length = __length;
+			#end
 			var data = Bytes.alloc(cacheLength);
 			data.blit(0, this, 0, cacheLength);
 			__setData(data);
-			__length = cacheLength;
+			#if lime_bytes_length_getter
+			this.l = cacheLength;
+			#else
+			this.length = cacheLength;
+			#end
 		}
 		#end
 
@@ -1263,8 +1173,13 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		{
 			__setData(bytes);
 
-			__length = __allocated;
-			position = __length;
+			#if lime_bytes_length_getter
+			l
+			#else
+			length
+			#end
+			= __length;
+			position = #if lime_bytes_length_getter l #else length #end;
 		}
 		#end
 	}
@@ -1307,7 +1222,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 	public function readBoolean():Bool
 	{
-		if (position < __length)
+		if (position < #if lime_bytes_length_getter l #else length #end)
 		{
 			return (get(position++) != 0);
 		}
@@ -1334,14 +1249,14 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 	public function readBytes(bytes:ByteArray, offset:Int = 0, length:Int = 0):Void
 	{
-		if (length == 0) length = __length - position;
+		if (length == 0) length = #if lime_bytes_length_getter l #else this.length #end - position;
 
-		if (position + length > __length)
+		if (position + length > #if lime_bytes_length_getter l #else this.length #end)
 		{
 			throw new EOFError();
 		}
 
-		if ((bytes : ByteArrayData).__length < offset + length)
+		if ((bytes : ByteArrayData).length < offset + length)
 		{
 			(bytes : ByteArrayData).__resize(offset + length);
 		}
@@ -1354,7 +1269,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 	{
 		if (endian == LITTLE_ENDIAN)
 		{
-			if (position + 8 > __length)
+			if (position + 8 > #if lime_bytes_length_getter l #else length #end)
 			{
 				throw new EOFError();
 				return 0;
@@ -1376,7 +1291,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 	{
 		if (endian == LITTLE_ENDIAN)
 		{
-			if (position + 4 > __length)
+			if (position + 4 > #if lime_bytes_length_getter l #else length #end)
 			{
 				throw new EOFError();
 				return 0;
@@ -1408,30 +1323,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		}
 	}
 
-	public function readInt64():Int64
-	{
-		if (position + 8 > length)
-		{
-			throw new EOFError();
-		}
-
-		var high:Int;
-		var low:Int;
-
-		if (endian == LITTLE_ENDIAN)
-		{
-			low = readUnsignedInt();
-			high = readUnsignedInt();
-		}
-		else
-		{
-			high = readUnsignedInt();
-			low = readUnsignedInt();
-		}
-
-		return Int64.make(high, low);
-	}
-
 	public function readMultiByte(length:Int, charSet:String):String
 	{
 		return readUTFBytes(length);
@@ -1441,19 +1332,21 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 	{
 		switch (objectEncoding)
 		{
+			#if format
 			case AMF0:
 				var input = new BytesInput(this, position);
 				var reader = new AMFReader(input);
-				var data = AMFTools.unwrapValue(reader.read());
+				var data = unwrapAMFValue(reader.read());
 				position = input.position;
 				return data;
 
 			case AMF3:
 				var input = new BytesInput(this, position);
-				var reader = new AMF3Reader(input, __amf3Reader);
-				var data = AMF3Tools.decode(reader.read());
+				var reader = new AMF3Reader(input);
+				var data = unwrapAMF3Value(reader.read());
 				position = input.position;
 				return data;
+			#end
 
 			case HXSF:
 				var data = readUTF();
@@ -1468,12 +1361,94 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		}
 	}
 
+	#if format
+	private static function unwrapAMFValue(val:AMFValue):Dynamic
+	{
+		switch (val)
+		{
+			case ANumber(f):
+				return f;
+			case ABool(b):
+				return b;
+			case AString(s):
+				return s;
+			case ADate(d):
+				return d;
+			case AUndefined:
+				return null;
+			case ANull:
+				return null;
+			case AArray(vals):
+				return vals.map(unwrapAMFValue);
+
+			case AObject(vmap):
+				// AMF0 has no distinction between Object/Map. Most likely we want an anonymous object here.
+				var obj = {};
+				for (name in vmap.keys())
+				{
+					Reflect.setField(obj, name, unwrapAMFValue(vmap.get(name)));
+				}
+				return obj;
+		};
+	}
+
+	private static function unwrapAMF3Value(val:AMF3Value):Dynamic
+	{
+		return switch (val)
+		{
+			case ANumber(f): return f;
+			case AInt(n): return n;
+			case ABool(b): return b;
+			case AString(s): return s;
+			case ADate(d): return d;
+			case AXml(xml): return xml;
+			case AUndefined: return null;
+			case ANull: return null;
+			case AArray(vals): return vals.map(unwrapAMF3Value);
+			case AVector(vals): return vals.map(unwrapAMF3Value);
+			case ABytes(b): return ByteArray.fromBytes(b);
+
+			case AObject(vmap):
+				var obj = {};
+				for (name in vmap.keys())
+				{
+					Reflect.setField(obj, name, unwrapAMF3Value(vmap[name]));
+				}
+				return obj;
+
+			case AMap(vmap):
+				var map:IMap<Dynamic, Dynamic> = null;
+				for (key in vmap.keys())
+				{
+					// Get the map type from the type of the first key.
+					if (map == null)
+					{
+						map = switch (key)
+						{
+							case AString(_): new Map<String, Dynamic>();
+							case AInt(_): new Map<Int, Dynamic>();
+							default: new ObjectMap<Dynamic, Dynamic>();
+						}
+					}
+					map.set(unwrapAMF3Value(key), unwrapAMF3Value(vmap[key]));
+				}
+
+				// Default to StringMap if the map is empty.
+				if (map == null)
+				{
+					map = new Map<String, Dynamic>();
+				}
+				return map;
+		}
+	}
+	#end
+
 	public function readShort():Int
 	{
 		var ch1 = readUnsignedByte();
 		var ch2 = readUnsignedByte();
 
-		var value:Int;
+		var value;
 
 		if (endian == LITTLE_ENDIAN)
 		{
@@ -1496,7 +1471,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 	public function readUnsignedByte():Int
 	{
-		if (position < __length)
+		if (position < #if lime_bytes_length_getter l #else length #end)
 		{
 			return get(position++);
 		}
@@ -1547,7 +1522,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 	public function readUTFBytes(length:Int):String
 	{
-		if (position + length > __length)
+		if (position + length > #if lime_bytes_length_getter l #else this.length #end)
 		{
 			throw new EOFError();
 		}
@@ -1561,14 +1536,22 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 	{
 		#if lime
 		#if js
-		if (__allocated > __length)
+		if (__length > #if lime_bytes_length_getter l #else length #end)
 		{
-			var cacheLength = __length;
-			__length = __allocated;
+			var cacheLength = #if lime_bytes_length_getter l #else length #end;
+			#if lime_bytes_length_getter
+			this.l = __length;
+			#else
+			this.length = __length;
+			#end
 			var data = Bytes.alloc(cacheLength);
 			data.blit(0, this, 0, cacheLength);
 			__setData(data);
-			__length = cacheLength;
+			#if lime_bytes_length_getter
+			this.l = cacheLength;
+			#else
+			this.length = cacheLength;
+			#end
 		}
 		#end
 
@@ -1585,7 +1568,12 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		{
 			__setData(bytes);
 
-			__length = __allocated;
+			#if lime_bytes_length_getter
+			l
+			#else
+			length
+			#end
+			= __length;
 		}
 		#end
 
@@ -1665,20 +1653,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		}
 	}
 
-	public function writeInt64(value:Int64):Void
-	{
-		if (endian == LITTLE_ENDIAN)
-		{
-			writeUnsignedInt(value.low);
-			writeUnsignedInt(value.high);
-		}
-		else
-		{
-			writeUnsignedInt(value.high);
-			writeUnsignedInt(value.low);
-		}
-	}
-
 	public function writeMultiByte(value:String, charSet:String):Void
 	{
 		writeUTFBytes(value);
@@ -1688,6 +1662,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 	{
 		switch (objectEncoding)
 		{
+			#if format
 			case AMF0:
 				var value = AMFTools.encode(object);
 				var output = new BytesOutput();
@@ -1696,20 +1671,12 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 				writeBytes(output.getBytes());
 
 			case AMF3:
+				var value = AMF3Tools.encode(object);
 				var output = new BytesOutput();
 				var writer = new AMF3Writer(output);
-
-				if (#if (haxe_ver >= 4.2) Std.isOfType #else Std.is #end (object, ByteArrayData))
-				{
-					writer.write(AByteArray(object));
-				}
-				else
-				{
-					var value = AMF3Tools.encode(object);
-					writer.write(value);
-				}
-
+				writer.write(value);
 				writeBytes(output.getBytes());
+			#end
 
 			case HXSF:
 				var value = Serializer.run(object);
@@ -1749,7 +1716,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 	{
 		var bytes = Bytes.ofString(value);
 
-		writeShort(bytes.length);
+		writeShort(#if lime_bytes_length_getter bytes.l #else bytes.length #end);
 		writeBytes(bytes);
 	}
 
@@ -1762,32 +1729,46 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 	@:noCompletion private function __fromBytes(bytes:Bytes):Void
 	{
 		__setData(bytes);
-		__length = bytes.length;
+		#if lime_bytes_length_getter
+		l = bytes.l;
+		#else
+		length = bytes.length;
+		#end
 	}
 
 	@:noCompletion private function __resize(size:Int):Void
 	{
-		if (size > __allocated)
+		if (size > __length)
 		{
 			var bytes = Bytes.alloc(((size + 1) * 3) >> 1);
 			#if sys
-			bytes.fill(__allocated, size - __allocated, 0);
+			bytes.fill(__length, size - __length, 0);
 			#end
 
-			if (__allocated > 0)
+			if (__length > 0)
 			{
-				var cacheLength = __length;
-				__length = __allocated;
-				bytes.blit(0, this, 0, __allocated);
-				__length = cacheLength;
+				var cacheLength = #if lime_bytes_length_getter l #else length #end;
+				#if lime_bytes_length_getter
+				l
+				#else
+				length
+				#end
+				= __length;
+				bytes.blit(0, this, 0, __length);
+				#if lime_bytes_length_getter
+				l
+				#else
+				length
+				#end
+				= cacheLength;
 			}
 
 			__setData(bytes);
 		}
 
-		if (__length < size)
+		if (#if lime_bytes_length_getter l #else length #end < size)
 		{
-			__length = size;
+			#if lime_bytes_length_getter l #else length #end = size;
 		}
 	}
 
@@ -1796,14 +1777,14 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		#if eval
 		// TODO: Not quite correct, but this will probably
 		// not be called while in a macro
-		var count = bytes.length < __length ? bytes.length : __length;
+		var count = bytes.length < length ? bytes.length : length;
 		for (i in 0...count)
 			set(i, bytes.get(i));
 		#else
 		b = bytes.b;
 		#end
 
-		__allocated = bytes.length;
+		__length = #if lime_bytes_length_getter bytes.l #else bytes.length #end;
 
 		#if js
 		data = bytes.data;
@@ -1813,7 +1794,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 	// Get & Set Methods
 	@:noCompletion private inline function get_bytesAvailable():Int
 	{
-		return __length - position;
+		return #if lime_bytes_length_getter l #else length #end - position;
 	}
 
 	@:noCompletion private inline static function get_defaultEndian():Endian
@@ -1854,15 +1835,21 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		return __endian = value;
 	}
 
-	#if !openfljs
-	@:noCompletion private inline function get___length():Int
+	#if lime_bytes_length_getter
+	@:noCompletion private override function set_length(value:Int):Int
 	{
-		return length;
-	}
+		#if display
+		#else
+		if (value > 0)
+		{
+			this.__resize(value);
+			if (value < this.position) this.position = value;
+		}
 
-	@:noCompletion private inline function set___length(value:Int):Int
-	{
-		return length = value;
+		this.l = value;
+		#end
+
+		return value;
 	}
 	#end
 }
@@ -1886,65 +1873,34 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 	#else
 	public static var defaultEndian:Endian;
 	#end
-
-	#if flash
-	#if (haxe_ver < 4.3)
 	public static var defaultObjectEncoding:ObjectEncoding;
+	#if flash
 	public var bytesAvailable(default, never):UInt;
+	#else
+	public var bytesAvailable(get, never):UInt;
+	private inline function get_bytesAvailable():UInt
+	{
+		return 0;
+	}
+	#end
+	#if flash
 	public var endian:Endian;
+	#else
+	public var endian(get, set):Endian;
+	@:noCompletion private function get_endian():Endian;
+	@:noCompletion private function set_endian(value:Endian):Endian;
+	#end
 	public var length:UInt;
 	public var objectEncoding:ObjectEncoding;
 	public var position:UInt;
-	@:require(flash11_4) public var shareable:Bool;
-	#else
-	@:flash.property static var defaultObjectEncoding(get, set):ObjectEncoding;
-	@:flash.property var bytesAvailable(get, never):UInt;
-	@:flash.property var endian(get, set):Endian;
-	@:flash.property var length(get, set):UInt;
-	@:flash.property var objectEncoding(get, set):ObjectEncoding;
-	@:flash.property var position(get, set):UInt;
-	@:flash.property @:require(flash11_4) var shareable(get, set):Bool;
-	private static function get_defaultObjectEncoding():ObjectEncoding;
-	private function get_bytesAvailable():UInt;
-	private function get_endian():Endian;
-	private function get_length():UInt;
-	private function get_objectEncoding():ObjectEncoding;
-	private function get_position():UInt;
-	private function get_shareable():Bool;
-	private static function set_defaultObjectEncoding(value:ObjectEncoding):ObjectEncoding;
-	private function set_endian(value:Endian):Endian;
-	private function set_length(value:UInt):UInt;
-	private function set_objectEncoding(value:ObjectEncoding):ObjectEncoding;
-	private function set_position(value:UInt):UInt;
-	private function set_shareable(value:Bool):Bool;
+	#if flash
+	@:noCompletion @:dox(hide) @:require(flash11_4) public var shareable:Bool;
 	#end
-	#else
-	static var defaultObjectEncoding(get, set):ObjectEncoding;
-	var bytesAvailable(get, never):UInt;
-	var endian(get, set):Endian;
-	var length(get, set):UInt;
-	var objectEncoding:ObjectEncoding;
-	var position(get, set):UInt;
-	@:require(flash11_4) var shareable(get, set):Bool;
-	private static function get_defaultObjectEncoding():ObjectEncoding;
-	private function get_bytesAvailable():UInt;
-	private function get_endian():Endian;
-	private function get_length():UInt;
-	private function get_objectEncoding():ObjectEncoding;
-	private function get_position():UInt;
-	private function get_shareable():Bool;
-	private static function set_defaultObjectEncoding(value:ObjectEncoding):ObjectEncoding;
-	private function set_endian(value:Endian):Endian;
-	private function set_length(value:UInt):UInt;
-	private function set_objectEncoding(value:ObjectEncoding):ObjectEncoding;
-	private function set_position(value:UInt):UInt;
-	private function set_shareable(value:Bool):Bool;
-	#end
-
 	public function new();
-
 	#if flash
 	@:noCompletion @:dox(hide) @:require(flash11_4) public function atomicCompareAndSwapIntAt(byteIndex:Int, expectedValue:Int, newValue:Int):Int;
+	#end
+	#if flash
 	@:noCompletion @:dox(hide) @:require(flash11_4) public function atomicCompareAndSwapLength(expectedLength:Int, newLength:Int):Int;
 	#end
 
@@ -1959,7 +1915,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 	/**
 		Compresses the byte array. The entire byte array is compressed. For
 		content running in Adobe AIR, you can specify a compression algorithm by
-		passing a value (defined in the CompressionAlgorithm class) as the
+		passing a value(defined in the CompressionAlgorithm class) as the
 		`algorithm` parameter. Flash Player supports only the default
 		algorithm, zlib.
 
@@ -1977,7 +1933,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		formats, such as zlib, gzip, some zip implementations, and others. When
 		data is compressed using one of those compression formats, in addition to
 		storing the compressed version of the original data, the compression
-		format data (for example, the .zip file) includes metadata information.
+		format data(for example, the .zip file) includes metadata information.
 		Some examples of the types of metadata included in various file formats
 		are file name, file modification date/time, original file size, optional
 		comments, checksum data, and more.
@@ -1986,7 +1942,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		the resulting ByteArray is structured in a specific format. Certain bytes
 		contain metadata about the compressed data, while other bytes contain the
 		actual compressed version of the original ByteArray data. As defined by
-		the zlib compressed data format specification, those bytes (that is, the
+		the zlib compressed data format specification, those bytes(that is, the
 		portion containing the compressed version of the original data) are
 		compressed using the deflate algorithm. Consequently those bytes are
 		identical to the result of calling `compress(<ph
@@ -2089,7 +2045,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		by `offset`.
 
 		@param bytes  The ByteArray object to read data into.
-		@param offset The offset (position) in `bytes` at which the
+		@param offset The offset(position) in `bytes` at which the
 					  read data should be written.
 		@param length The number of bytes to read. The default value of 0 causes
 					  all available data to be read.
@@ -2126,36 +2082,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		@throws EOFError There is not sufficient data available to read.
 	**/
 	public function readInt():Int;
-
-	/**
-		Reads a signed 64-bit integer from the byte stream.
-		The returned value is in the range −9223372036854775808 to 9223372036854775807.
-		@return A 64-bit signed integer between −9223372036854775808 to 9223372036854775807.
-		@throws EOFError There is not sufficient data available to read.
-	**/
-	public inline function readInt64():Int64
-	{
-		if (position + 8 > length)
-		{
-			throw new EOFError();
-		}
-
-		var high:Int;
-		var low:Int;
-
-		if (endian == LITTLE_ENDIAN)
-		{
-			low = readUnsignedInt();
-			high = readUnsignedInt();
-		}
-		else
-		{
-			high = readUnsignedInt();
-			low = readUnsignedInt();
-		}
-
-		return Int64.make(high, low);
-	}
 
 	/**
 		Reads a multibyte string of specified length from the byte stream using
@@ -2264,7 +2190,7 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 
 	/**
 		Decompresses the byte array. For content running in Adobe AIR, you can
-		specify a compression algorithm by passing a value (defined in the
+		specify a compression algorithm by passing a value(defined in the
 		CompressionAlgorithm class) as the `algorithm` parameter. The
 		byte array must have been compressed using the same algorithm. Flash
 		Player supports only the default algorithm, zlib.
@@ -2357,24 +2283,6 @@ abstract ByteArray(ByteArrayData) from ByteArrayData to ByteArrayData
 		@param value An integer to write to the byte stream.
 	**/
 	public function writeInt(value:Int):Void;
-
-	/**
-		Writes a 64-bit signed integer to the byte stream.
-		@param value An integer to write to the byte stream.
-	**/
-	public inline function writeInt64(value:Int64):Void
-	{
-		if (endian == LITTLE_ENDIAN)
-		{
-			writeUnsignedInt(value.low);
-			writeUnsignedInt(value.high);
-		}
-		else
-		{
-			writeUnsignedInt(value.high);
-			writeUnsignedInt(value.low);
-		}
-	}
 
 	/**
 		Writes a multibyte string to the byte stream using the specified character

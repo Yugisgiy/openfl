@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension>
 
-	<log warn="OpenFL expects Haxe 3.4.3 or greater, but version ${haxe} is being used" if="${${haxe} < 3.4.3}" unless="display" />
+	<log warn="OpenFL expects Haxe 3.4.3 or greater, but version ${haxe} is being used" if="${${haxe} < 3.4.3}" />
 
 	<set name="expect-lime-version" value="7.7.0+" />
 
@@ -35,14 +35,7 @@
 
 	</section>
 
-	<section if="${haxe_ver >= 4.3} ${lime < 8.0.2} flash" unless="setup || create || disable-version-check || display">
-
-		<!-- Haxe 4.3 made Flash externs more strict -->
-		<log error="Lime version ${lime} is not compatible with OpenFL ${openfl} when targeting flash or air with Haxe 4.3+ (expected Lime version 8.0.2+)" />
-
-	</section>
-
-	<section if="${lime < 7.6.0} || ${lime >= 8.3.0}" unless="setup || create || disable-version-check || display">
+	<section if="${lime < 7.6.0} || ${lime >= 8.0.0}" unless="setup || create || disable-version-check">
 
 		<log warn="Lime version ${lime} may not be compatible with OpenFL ${openfl} (expected version ${expect-lime-version})" />
 		<log info='Use &lt;lime version="" /&gt; before &lt;haxelib name="openfl" /&gt; to include a specific version' />
@@ -63,7 +56,7 @@
 
 	<section unless="custom-backend">
 
-		<define name="openfl-disable-handle-error" if="debug" />
+		<define name="openfl-disable-handle-error" unless="openfl-enable-handle-error" if="debug" />
 
 		<section if="native">
 
@@ -143,7 +136,6 @@
 	<library handler="swf" type="swf" />
 	<library handler="swf" type="swflite" />
 	<library handler="swf" type="swf_lite" />
-	<library handler="swf" type="swc" />
 
 	<section if="setup">
 

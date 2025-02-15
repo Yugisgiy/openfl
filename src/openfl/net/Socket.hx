@@ -44,10 +44,6 @@ import sys.net.Socket as SysSocket;
 
 	A socket transmits and receives data asynchronously.
 
-	_OpenFL target support:_ This feature is supported on all desktop operating
-	systems, on iOS, and on Android. On the html5 target, it uses web sockets
-	instead of raw unix-style sockets.
-
 	On some operating systems, flush() is called automatically between
 	execution frames, but on other operating systems, such as Windows, the
 	data is never sent unless you call `flush()` explicitly. To ensure your
@@ -95,7 +91,8 @@ import sys.net.Socket as SysSocket;
 	application security sandbox.
 
 	For more information related to security, see the Flash Player Developer
-	Center Topic: [Security](http://www.adobe.com/go/devnet_security_en).s
+	Center Topic: <a href="http://www.adobe.com/go/devnet_security_en"
+	scope="external">Security</a>
 
 	@event close         Dispatched when the server closes the socket
 						 connection.
@@ -157,18 +154,6 @@ class Socket extends EventDispatcher implements IDataInput implements IDataOutpu
 	**/
 	public var connected(get, never):Bool;
 
-	#if (sys && (!flash_doc_gen || air_doc_gen))
-	/**
-	 * The IP address this socket is bound to on the local machine.
-	**/
-	public var localAddress(get, never):String;
-
-	/**
-		The port this socket is bound to on the local machine.
-	 */
-	public var localPort(get, never):Int;
-	#end
-
 	/**
 		Indicates the byte order for the data. Possible values are constants
 		from the openfl.utils.Endian class, `Endian.BIG_ENDIAN` or
@@ -183,24 +168,6 @@ class Socket extends EventDispatcher implements IDataInput implements IDataOutpu
 	**/
 	public var objectEncoding:ObjectEncoding;
 
-	#if (sys && (!flash_doc_gen || air_doc_gen))
-	/**
-		The IP address of the remote machine to which this socket is connected.
-
-		You can use this property to determine the IP address of a client socket
-		dispatched in a ServerSocketConnectEvent by a ServerSocket object.
-	 */
-	public var remoteAddress(get, never):String;
-
-	/**
-		The port on the remote machine to which this socket is connected.
-
-		You can use this property to determine the port number of a client socket
-		dispatched in a ServerSocketConnectEvent by a ServerSocket object.
-	 */
-	public var remotePort(get, never):Int;
-	#end
-
 	@SuppressWarnings("checkstyle:FieldDocComment")
 	@:noCompletion @:dox(hide) public var secure:Bool;
 
@@ -212,7 +179,7 @@ class Socket extends EventDispatcher implements IDataInput implements IDataOutpu
 	public var timeout:Int;
 
 	@:noCompletion private var __buffer:Bytes;
-	@:noCompletion private var __connected:Bool = false;
+	@:noCompletion private var __connected:Bool;
 	@:noCompletion private var __endian:Endian;
 	@:noCompletion private var __host:String;
 	@:noCompletion private var __input:ByteArray;
@@ -231,7 +198,7 @@ class Socket extends EventDispatcher implements IDataInput implements IDataOutpu
 			"endian": {
 				get: untyped #if haxe4 js.Syntax.code #else __js__ #end ("function () { return this.get_endian (); }"),
 				set: untyped #if haxe4 js.Syntax.code #else __js__ #end ("function (v) { return this.set_endian (v); }")
-			}
+			},
 		});
 	}
 	#end
@@ -284,9 +251,11 @@ class Socket extends EventDispatcher implements IDataInput implements IDataOutpu
 							 server whose policy file doesn't grant the
 							 calling host access to the specified port. For
 							 more information on policy files, see "Website
-							 controls (policy files)" in the _OpenFL
+							 controls (policy files)" in the _ActionScript 3.0
 							 Developer's Guide_ and the Flash Player Developer
-							 Center Topic: [Security](http://www.adobe.com/go/devnet_security_en).
+							 Center Topic: <a
+							 href="http://www.adobe.com/go/devnet_security_en"
+							 scope="external">Security</a>.
 	**/
 	public function new(host:String = null, port:Int = 0)
 	{
@@ -297,7 +266,7 @@ class Socket extends EventDispatcher implements IDataInput implements IDataOutpu
 
 		__buffer = Bytes.alloc(4096);
 
-		if (host != null && port > 0 && port < 65535)
+		if (port > 0 && port < 65535)
 		{
 			connect(host, port);
 		}
@@ -365,11 +334,13 @@ class Socket extends EventDispatcher implements IDataInput implements IDataOutpu
 							 server whose policy file doesn't grant the
 							 calling host access to the specified port. For
 							 more information on policy files, see "Website
-							 controls (policy files)" in the _OpenFL
+							 controls (policy files)" in the _ActionScript 3.0
 							 Developer's Guide_ and the Flash Player Developer
-							 Center Topic: [Security](http://www.adobe.com/go/devnet_security_en).
+							 Center Topic: <a
+							 href="http://www.adobe.com/go/devnet_security_en"
+							 scope="external">Security</a>.
 	**/
-	public function connect(host:String, port:Int):Void
+	public function connect(host:String = null, port:Int = 0):Void
 	{
 		if (__socket != null)
 		{
@@ -427,15 +398,7 @@ class Socket extends EventDispatcher implements IDataInput implements IDataOutpu
 		__socket.onclose = socket_onClose;
 		__socket.onerror = socket_onError;
 		#else
-		try
-		{
-			__socket = new SysSocket();
-		}
-		catch (e:Dynamic)
-		{
-			dispatchEvent(new IOErrorEvent(IOErrorEvent.IO_ERROR, true, false, "Connection failed"));
-			return;
-		}
+		__socket = new SysSocket();
 
 		try
 		{
@@ -484,18 +447,7 @@ class Socket extends EventDispatcher implements IDataInput implements IDataOutpu
 			}
 			catch (e:Dynamic)
 			{
-				var throwError = false;
-				switch (e)
-				{
-					case Error.Blocked:
-					case Error.Custom(Error.Blocked):
-					default:
-						throwError = true;
-				}
-				if (throwError)
-				{
-					throw new IOError("Operation attempted on invalid socket.");
-				}
+				throw new IOError("Operation attempted on invalid socket.");
 			}
 		}
 	}
@@ -1098,24 +1050,13 @@ class Socket extends EventDispatcher implements IDataInput implements IDataOutpu
 
 		if (!connected)
 		{
-			try
+			var r = SysSocket.select(null, [__socket], null, 0);
+
+			if (r.write[0] == __socket)
 			{
-				var r = SysSocket.select(null, [__socket], null, 0);
-				if (r.write[0] == __socket)
-				{
-					doConnect = true;
-				}
-				else if (Sys.time() - __timestamp > timeout / 1000)
-				{
-					doClose = true;
-				}
-				else
-				{
-					// try again later
-					return;
-				}
+				doConnect = true;
 			}
-			catch (e:Dynamic)
+			else if (Sys.time() - __timestamp > timeout / 1000)
 			{
 				doClose = true;
 			}
@@ -1124,38 +1065,7 @@ class Socket extends EventDispatcher implements IDataInput implements IDataOutpu
 		var b = new BytesBuffer();
 		var bLength = 0;
 
-		if (doConnect)
-		{
-			try
-			{
-				var peer = __socket.peer();
-				if (peer == null)
-				{
-					// not connected yet (hxcpp and hl)
-					if (Sys.time() - __timestamp > timeout / 1000)
-					{
-						doClose = true;
-					}
-					else
-					{
-						return;
-					}
-				}
-			}
-			catch (e:Dynamic)
-			{
-				// not connected yet (neko)
-				if (Sys.time() - __timestamp > timeout / 1000)
-				{
-					doClose = true;
-				}
-				else
-				{
-					return;
-				}
-			}
-		}
-		else if (connected)
+		if (connected || doConnect)
 		{
 			try
 			{
@@ -1175,21 +1085,13 @@ class Socket extends EventDispatcher implements IDataInput implements IDataOutpu
 			}
 			catch (e:Eof)
 			{
-				// We used to ignore this, but I'm not sure why. There may be an edge case where this causes the socket to prematurely close or become unusable.
-				doClose = true;
+				// ignore
 			}
 			catch (e:Error)
 			{
-				switch (e)
+				if (e != Error.Blocked)
 				{
-					case Error.Blocked:
-					case Error.Custom(custom):
-						if (custom != Error.Blocked && custom != "EOF")
-						{
-							doClose = true;
-						}
-					default:
-						doClose = true;
+					doClose = true;
 				}
 			}
 			catch (e:Dynamic)
@@ -1276,44 +1178,6 @@ class Socket extends EventDispatcher implements IDataInput implements IDataOutpu
 
 		return __endian;
 	}
-
-	#if sys
-	@:noCompletion private function get_localAddress():String
-	{
-		if (__connected)
-		{
-			return __socket.host().host.host;
-		}
-		return null;
-	}
-
-	@:noCompletion private function get_localPort():Int
-	{
-		if (__connected)
-		{
-			return __socket.host().port;
-		}
-		return 0;
-	}
-
-	@:noCompletion private function get_remoteAddress():String
-	{
-		if (__connected)
-		{
-			return __socket.peer().host.host;
-		}
-		return null;
-	}
-
-	@:noCompletion private function get_remotePort():Int
-	{
-		if (__connected)
-		{
-			return __socket.peer().port;
-		}
-		return 0;
-	}
-	#end
 }
 #else
 typedef Socket = flash.net.Socket;

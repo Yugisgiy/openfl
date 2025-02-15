@@ -6,10 +6,6 @@ package openfl.net;
 	application and a server. Use URLVariables objects with methods of the
 	URLLoader class, with the `data` property of the URLRequest
 	class, and with openfl.net package functions.
-
-	@see [Loading external data](https://books.openfl.org/openfl-developers-guide/http-communications/loading-external-data.html)
-	@see `openfl.net.URLRequest`
-	@see `openfl.net.URLLoader`
 **/
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
@@ -99,23 +95,11 @@ abstract URLVariables(Dynamic) from Dynamic to Dynamic
 			}
 			else
 			{
-				result.push(StringTools.urlEncode(f) + "=" + StringTools.urlEncode(Std.string(value)));
+				result.push(StringTools.urlEncode(f) + "=" + StringTools.urlEncode(value));
 			}
 		}
 
 		return result.join("&");
-	}
-
-	@SuppressWarnings("checkstyle:FieldDocComment")
-	@:arrayAccess private inline function __get(key:String):Dynamic
-	{
-		return Reflect.field(this, key);
-	}
-
-	@SuppressWarnings("checkstyle:FieldDocComment")
-	@:arrayAccess private inline function __set(key:String, value:String):Void
-	{
-		Reflect.setField(this, key, value);
 	}
 }
 #else

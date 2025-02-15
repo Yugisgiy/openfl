@@ -9,8 +9,7 @@ import openfl.utils._internal.NullUtils;
 /**
 	Defines the values to use for specifying the Context3D profile.
 **/
-#if (haxe_ver >= 4.0) enum #else @:enum #end abstract Context3DProfile(Null<Int>)
-
+@:enum abstract Context3DProfile(Null<Int>)
 {
 	/**
 		Use the default feature support profile.
@@ -132,8 +131,7 @@ import openfl.utils._internal.NullUtils;
 }
 #else
 @SuppressWarnings("checkstyle:FieldDocComment")
-#if (haxe_ver >= 4.0) enum #else @:enum #end abstract Context3DProfile(String) from String to String
-
+@:enum abstract Context3DProfile(String) from String to String
 {
 	public var BASELINE = "baseline";
 	public var BASELINE_CONSTRAINED = "baselineConstrained";

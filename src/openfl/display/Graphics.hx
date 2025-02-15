@@ -33,18 +33,10 @@ import js.html.CanvasRenderingContext2D;
 	`drawRoundRect()`, `drawCircle()`, and
 	`drawEllipse()`.
 
-	You cannot create a Graphics object directly from Haxe code. If
+	You cannot create a Graphics object directly from ActionScript code. If
 	you call `new Graphics()`, an exception is thrown.
 
 	The Graphics class is final; it cannot be subclassed.
-
-	@see [Basics of the drawing API](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/basics-of-the-drawing-api.html)
-	@see [Drawing lines and curves](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/drawing-lines-and-curves.html)
-	@see [Drawing shapes using built-in methods](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/drawing-shapes-using-built-in-methods.html)
-	@see [Creating gradient lines and fills](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/creating-gradient-lines-and-fills.html)
-	@see [Using the Math class with drawing methods](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/using-the-math-class-with-drawing-methods.html)
-	@see [Understanding the Graphics class](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/understanding-the-graphics-class.html)
-	@see [Advanced use of the drawing API](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/advanced-use-of-the-drawing-api/)
 **/
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
@@ -98,7 +90,6 @@ import js.html.CanvasRenderingContext2D;
 	@SuppressWarnings("checkstyle:Dynamic") @:noCompletion private var __cairo:#if lime Cairo #else Dynamic #end;
 	#end
 	@:noCompletion private var __bitmap:BitmapData;
-	@:noCompletion private var __bitmapScale:Float;
 
 	@:noCompletion private function new(owner:DisplayObject)
 	{
@@ -113,8 +104,6 @@ import js.html.CanvasRenderingContext2D;
 		__worldTransform = new Matrix();
 		__width = 0;
 		__height = 0;
-
-		__bitmapScale = 1;
 
 		__shaderBufferPool = new ObjectPool<ShaderBuffer>(function() return new ShaderBuffer());
 
@@ -135,22 +124,22 @@ import js.html.CanvasRenderingContext2D;
 
 		@param bitmap A transparent or opaque bitmap image that contains the bits
 					  to be displayed.
-		@param matrix A matrix object (of the openfl.geom.Matrix class), which you
+		@param matrix A matrix object(of the openfl.geom.Matrix class), which you
 					  can use to define transformations on the bitmap. For
 					  example, you can use the following matrix to rotate a bitmap
 					  by 45 degrees(pi/4 radians):
 
-					  ```haxe
-					  matrix = new openfl.geom.Matrix();
-					  matrix.rotate(Math.PI / 4);
-					  ```
+		```haxe
+		matrix = new openfl.geom.Matrix();
+			 	matrix.rotate(Math.PI / 4);
+			 	```
 
 		@param repeat If `true`, the bitmap image repeats in a tiled
 					  pattern. If `false`, the bitmap image does not
 					  repeat, and the edges of the bitmap are used for any fill
 					  area that extends beyond the bitmap.
 
-					  For example, consider the following bitmap (a 20 x
+					  For example, consider the following bitmap(a 20 x
 					  20-pixel checkerboard pattern):
 
 					  ![20 by 20 pixel checkerboard](/images/movieClip_beginBitmapFill_repeat_1.jpg)
@@ -181,7 +170,7 @@ import js.html.CanvasRenderingContext2D;
 
 	/**
 		Specifies a simple one-color fill that subsequent calls to other Graphics
-		methods (such as `lineTo()` or `drawCircle()`) use
+		methods(such as `lineTo()` or `drawCircle()`) use
 		when drawing. The fill remains in effect until you call the
 		`beginFill()`, `beginBitmapFill()`,
 		`beginGradientFill()`, or `beginShaderFill()`
@@ -190,8 +179,8 @@ import js.html.CanvasRenderingContext2D;
 		The application renders the fill whenever three or more points are
 		drawn, or when the `endFill()` method is called.
 
-		@param color The color of the fill (0xRRGGBB).
-		@param alpha The alpha value of the fill (0.0 to 1.0).
+		@param color The color of the fill(0xRRGGBB).
+		@param alpha The alpha value of the fill(0.0 to 1.0).
 	**/
 	public function beginFill(color:Int = 0, alpha:Float = 1):Void
 	{
@@ -202,7 +191,7 @@ import js.html.CanvasRenderingContext2D;
 
 	/**
 		Specifies a gradient fill used by subsequent calls to other Graphics
-		methods (such as `lineTo()` or `drawCircle()`) for
+		methods(such as `lineTo()` or `drawCircle()`) for
 		the object. The fill remains in effect until you call the
 		`beginFill()`, `beginBitmapFill()`,
 		`beginGradientFill()`, or `beginShaderFill()`
@@ -292,8 +281,6 @@ import js.html.CanvasRenderingContext2D;
 		![radial gradient with focalPointRatio set to 0.75](/images/radial_sketch.jpg)
 
 		@throws ArgumentError If the `type` parameter is not valid.
-
-		@see [Creating gradient lines and fills](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/creating-gradient-lines-and-fills.html)
 	**/
 	public function beginGradientFill(type:GradientType, colors:Array<Int>, alphas:Array<Float>, ratios:Array<Int>, matrix:Matrix = null,
 			spreadMethod:SpreadMethod = SpreadMethod.PAD, interpolationMethod:InterpolationMethod = InterpolationMethod.RGB, focalPointRatio:Float = 0):Void
@@ -316,7 +303,7 @@ import js.html.CanvasRenderingContext2D;
 
 			for (i in 0...colors.length)
 			{
-				ratios.push(Math.ceil((i / (colors.length - 1)) * 255));
+				ratios.push(Math.ceil((i / colors.length) * 255));
 			}
 		}
 
@@ -491,19 +478,72 @@ import js.html.CanvasRenderingContext2D;
 		the registration point of the parent display object.
 		@param	anchorY	Specifies the vertical position of the anchor point relative to
 		the registration point of the parent display object.
-
-		@see [Drawing lines and curves](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/drawing-lines-and-curves.html)
 	**/
 	public function cubicCurveTo(controlX1:Float, controlY1:Float, controlX2:Float, controlY2:Float, anchorX:Float, anchorY:Float):Void
 	{
-		var xs = __findExtrema(__positionX, controlX1, controlX2, anchorX);
-		var ys = __findExtrema(__positionY, controlY1, controlY2, anchorY);
+		__inflateBounds(__positionX - __strokePadding, __positionY - __strokePadding);
+		__inflateBounds(__positionX + __strokePadding, __positionY + __strokePadding);
 
-		__inflateBounds(xs.min - __strokePadding, ys.min - __strokePadding);
-		__inflateBounds(xs.max + __strokePadding, ys.max + __strokePadding);
+		var ix1, iy1, ix2, iy2;
+
+		ix1 = anchorX;
+		ix2 = anchorX;
+
+		if (!(((controlX1 < anchorX && controlX1 > __positionX) || (controlX1 > anchorX && controlX1 < __positionX))
+			&& ((controlX2 < anchorX && controlX2 > __positionX) || (controlX2 > anchorX && controlX2 < __positionX))))
+		{
+			var u = (2 * __positionX - 4 * controlX1 + 2 * controlX2);
+			var v = (controlX1 - __positionX);
+			var w = (-__positionX + 3 * controlX1 + anchorX - 3 * controlX2);
+
+			var t1 = (-u + Math.sqrt(u * u - 4 * v * w)) / (2 * w);
+			var t2 = (-u - Math.sqrt(u * u - 4 * v * w)) / (2 * w);
+
+			if (t1 > 0 && t1 < 1)
+			{
+				ix1 = __calculateBezierCubicPoint(t1, __positionX, controlX1, controlX2, anchorX);
+			}
+
+			if (t2 > 0 && t2 < 1)
+			{
+				ix2 = __calculateBezierCubicPoint(t2, __positionX, controlX1, controlX2, anchorX);
+			}
+		}
+
+		iy1 = anchorY;
+		iy2 = anchorY;
+
+		if (!(((controlY1 < anchorY && controlY1 > __positionX) || (controlY1 > anchorY && controlY1 < __positionX))
+			&& ((controlY2 < anchorY && controlY2 > __positionX) || (controlY2 > anchorY && controlY2 < __positionX))))
+		{
+			var u = (2 * __positionX - 4 * controlY1 + 2 * controlY2);
+			var v = (controlY1 - __positionX);
+			var w = (-__positionX + 3 * controlY1 + anchorY - 3 * controlY2);
+
+			var t1 = (-u + Math.sqrt(u * u - 4 * v * w)) / (2 * w);
+			var t2 = (-u - Math.sqrt(u * u - 4 * v * w)) / (2 * w);
+
+			if (t1 > 0 && t1 < 1)
+			{
+				iy1 = __calculateBezierCubicPoint(t1, __positionX, controlY1, controlY2, anchorY);
+			}
+
+			if (t2 > 0 && t2 < 1)
+			{
+				iy2 = __calculateBezierCubicPoint(t2, __positionX, controlY1, controlY2, anchorY);
+			}
+		}
+
+		__inflateBounds(ix1 - __strokePadding, iy1 - __strokePadding);
+		__inflateBounds(ix1 + __strokePadding, iy1 + __strokePadding);
+		__inflateBounds(ix2 - __strokePadding, iy2 - __strokePadding);
+		__inflateBounds(ix2 + __strokePadding, iy2 + __strokePadding);
 
 		__positionX = anchorX;
 		__positionY = anchorY;
+
+		__inflateBounds(__positionX - __strokePadding, __positionY - __strokePadding);
+		__inflateBounds(__positionX + __strokePadding, __positionY + __strokePadding);
 
 		__commands.cubicCurveTo(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY);
 
@@ -541,16 +581,13 @@ import js.html.CanvasRenderingContext2D;
 		@param anchorY  A number that specifies the vertical position of the next
 						anchor point relative to the registration point of the
 						parent display object.
-
-		@see [Drawing lines and curves](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/drawing-lines-and-curves.html)
 	**/
 	public function curveTo(controlX:Float, controlY:Float, anchorX:Float, anchorY:Float):Void
 	{
 		__inflateBounds(__positionX - __strokePadding, __positionY - __strokePadding);
 		__inflateBounds(__positionX + __strokePadding, __positionY + __strokePadding);
 
-		var ix:Float;
-		var iy:Float;
+		var ix, iy;
 
 		if ((controlX < anchorX && controlX > __positionX) || (controlX > anchorX && controlX < __positionX))
 		{
@@ -578,18 +615,11 @@ import js.html.CanvasRenderingContext2D;
 		__positionX = anchorX;
 		__positionY = anchorY;
 
-		__inflateBounds(__positionX - __strokePadding, __positionY - __strokePadding);
-		__inflateBounds(__positionX + __strokePadding, __positionY + __strokePadding);
-
 		__commands.curveTo(controlX, controlY, anchorX, anchorY);
 
 		__dirty = true;
 	}
 
-	/**
-
-		@see [Drawing shapes using built-in methods](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/drawing-shapes-using-built-in-methods.html)
-	**/
 	public function drawCircle(x:Float, y:Float, radius:Float):Void
 	{
 		if (radius <= 0) return;
@@ -605,20 +635,18 @@ import js.html.CanvasRenderingContext2D;
 	/**
 		Draws an ellipse. Set the line style, fill, or both before you call the
 		`drawEllipse()` method, by calling the
-		`lineStyle()`, `lineGradientStyle()`,
+		`linestyle()`, `lineGradientStyle()`,
 		`beginFill()`, `beginGradientFill()`, or
 		`beginBitmapFill()` method.
 
 		@param x      The _x_ location of the top-left of the bounding-box of
 					  the ellipse relative to the registration point of the parent
-					  display object (in pixels).
+					  display object(in pixels).
 		@param y      The _y_ location of the top left of the bounding-box of
 					  the ellipse relative to the registration point of the parent
-					  display object (in pixels).
-		@param width  The width of the ellipse (in pixels).
-		@param height The height of the ellipse (in pixels).
-
-		@see [Drawing shapes using built-in methods](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/drawing-shapes-using-built-in-methods.html)
+					  display object(in pixels).
+		@param width  The width of the ellipse(in pixels).
+		@param height The height of the ellipse(in pixels).
 	**/
 	public function drawEllipse(x:Float, y:Float, width:Float, height:Float):Void
 	{
@@ -760,7 +788,7 @@ import js.html.CanvasRenderingContext2D;
 			* A sub-path of less than 3 points is not rendered.(But note that the
 			stroke rendering will still occur, consistent with the rules for strokes
 			below.)
-			* A sub-path that isn't closed (the end point is not equal to the
+			* A sub-path that isn't closed(the end point is not equal to the
 			begin point) is implicitly closed.
 		* When a stroke is applied to rendering a path:
 			* The sub-paths can be composed of any number of points.
@@ -774,8 +802,6 @@ import js.html.CanvasRenderingContext2D;
 		numbers represents a coordinate location.
 		@param	winding	Specifies the winding rule using a value defined in the
 		GraphicsPathWinding class.
-
-		@see [Drawing paths](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/advanced-use-of-the-drawing-api/drawing-paths.html)
 	**/
 	public function drawPath(commands:Vector<Int>, data:Vector<Float>, winding:GraphicsPathWinding = GraphicsPathWinding.EVEN_ODD):Void
 	{
@@ -885,8 +911,7 @@ import js.html.CanvasRenderingContext2D;
 		var maxX = Math.NEGATIVE_INFINITY;
 		var maxY = Math.NEGATIVE_INFINITY;
 
-		var ri:Int;
-		var ti:Int;
+		var ri, ti;
 
 		for (i in 0...length)
 		{
@@ -943,22 +968,20 @@ import js.html.CanvasRenderingContext2D;
 
 	/**
 		Draws a rectangle. Set the line style, fill, or both before you call the
-		`drawRect()` method, by calling the `lineStyle()`,
+		`drawRect()` method, by calling the `linestyle()`,
 		`lineGradientStyle()`, `beginFill()`,
 		`beginGradientFill()`, or `beginBitmapFill()`
 		method.
 
 		@param x      A number indicating the horizontal position relative to the
-					  registration point of the parent display object (in pixels).
+					  registration point of the parent display object(in pixels).
 		@param y      A number indicating the vertical position relative to the
-					  registration point of the parent display object (in pixels).
-		@param width  The width of the rectangle (in pixels).
-		@param height The height of the rectangle (in pixels).
+					  registration point of the parent display object(in pixels).
+		@param width  The width of the rectangle(in pixels).
+		@param height The height of the rectangle(in pixels).
 		@throws ArgumentError If the `width` or `height`
 							  parameters are not a number
-							  (`Number.NaN`).
-
-		@see [Drawing shapes using built-in methods](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/drawing-shapes-using-built-in-methods.html)
+							 (`Number.NaN`).
 	**/
 	public function drawRect(x:Float, y:Float, width:Float, height:Float):Void
 	{
@@ -978,30 +1001,28 @@ import js.html.CanvasRenderingContext2D;
 	/**
 		Draws a rounded rectangle. Set the line style, fill, or both before you
 		call the `drawRoundRect()` method, by calling the
-		`lineStyle()`, `lineGradientStyle()`,
+		`linestyle()`, `lineGradientStyle()`,
 		`beginFill()`, `beginGradientFill()`, or
 		`beginBitmapFill()` method.
 
 		@param x             A number indicating the horizontal position relative
 							 to the registration point of the parent display
-							 object (in pixels).
+							 object(in pixels).
 		@param y             A number indicating the vertical position relative to
 							 the registration point of the parent display object
-							 (in pixels).
-		@param width         The width of the round rectangle (in pixels).
-		@param height        The height of the round rectangle (in pixels).
+							(in pixels).
+		@param width         The width of the round rectangle(in pixels).
+		@param height        The height of the round rectangle(in pixels).
 		@param ellipseWidth  The width of the ellipse used to draw the rounded
-							 corners (in pixels).
+							 corners(in pixels).
 		@param ellipseHeight The height of the ellipse used to draw the rounded
-							 corners (in pixels). Optional; if no value is
+							 corners(in pixels). Optional; if no value is
 							 specified, the default value matches that provided
 							 for the `ellipseWidth` parameter.
 		@throws ArgumentError If the `width`, `height`,
 							  `ellipseWidth` or
 							  `ellipseHeight` parameters are not a
-							  number (`Number.NaN`).
-
-		@see [Drawing shapes using built-in methods](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/drawing-shapes-using-built-in-methods.html)
+							  number(`Number.NaN`).
 	**/
 	public function drawRoundRect(x:Float, y:Float, width:Float, height:Float, ellipseWidth:Float, ellipseHeight:Null<Float> = null):Void
 	{
@@ -1072,7 +1093,7 @@ import js.html.CanvasRenderingContext2D;
 		Renders a set of triangles, typically to distort bitmaps and give them a
 		three-dimensional appearance. The `drawTriangles()` method maps
 		either the current fill, or a bitmap fill, to the triangle faces using a
-		set of (u,v) coordinates.
+		set of(u,v) coordinates.
 
 		 Any type of fill can be used, but if the fill has a transform matrix
 		that transform matrix is ignored.
@@ -1085,8 +1106,6 @@ import js.html.CanvasRenderingContext2D;
 					   of triangles that cannot be seen in the current view. This
 					   parameter can be set to any value defined by the
 					   TriangleCulling class.
-
-		@see [About using drawTriangles()](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/advanced-use-of-the-drawing-api/about-using-drawtriangles.html)
 	**/
 	public function drawTriangles(vertices:Vector<Float>, indices:Vector<Int> = null, uvtData:Vector<Float> = null,
 			culling:TriangleCulling = TriangleCulling.NONE):Void
@@ -1117,8 +1136,7 @@ import js.html.CanvasRenderingContext2D;
 			culling = NONE;
 		}
 
-		var x:Float;
-		var y:Float;
+		var x, y;
 		var minX = Math.POSITIVE_INFINITY;
 		var minY = Math.POSITIVE_INFINITY;
 		var maxX = Math.NEGATIVE_INFINITY;
@@ -1266,35 +1284,13 @@ import js.html.CanvasRenderingContext2D;
 		`focalPointRatio` of -0.75:
 
 		![radial gradient with focalPointRatio set to 0.75](/images/radial_sketch.jpg)
-
-		@see [Creating gradient lines and fills](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/creating-gradient-lines-and-fills.html)
 	**/
 	public function lineGradientStyle(type:GradientType, colors:Array<Int>, alphas:Array<Float>, ratios:Array<Int>, matrix:Matrix = null,
 			spreadMethod:SpreadMethod = SpreadMethod.PAD, interpolationMethod:InterpolationMethod = InterpolationMethod.RGB, focalPointRatio:Float = 0):Void
 	{
-		if (alphas == null)
-		{
-			alphas = [];
-
-			for (i in 0...colors.length)
-			{
-				alphas.push(1);
-			}
-		}
-
-		if (ratios == null)
-		{
-			ratios = [];
-
-			for (i in 0...colors.length)
-			{
-				ratios.push(Math.ceil((i / (colors.length - 1)) * 255));
-			}
-		}
 		__commands.lineGradientStyle(type, colors, alphas, ratios, matrix, spreadMethod, interpolationMethod, focalPointRatio);
 	}
 
-	#if false
 	/**
 		Specifies a shader to use for the line stroke when drawing lines.
 
@@ -1311,7 +1307,6 @@ import js.html.CanvasRenderingContext2D;
 		Calls to the `clear()` method set the line style back to undefined.
 	**/
 	// @:require(flash10) public function lineShaderStyle (shader:Shader, ?matrix:Matrix):Void;
-	#end
 
 	/**
 		Specifies a line style used for subsequent calls to Graphics methods such
@@ -1325,10 +1320,10 @@ import js.html.CanvasRenderingContext2D;
 		drawing a path to specify different styles for different line segments
 		within the path.
 
-		**Note:** Calls to the `clear()` method set the line
+		**Note: **Calls to the `clear()` method set the line
 		style back to `undefined`.
 
-		**Note:** Flash Lite 4 supports only the first three parameters
+		**Note: **Flash Lite 4 supports only the first three parameters
 		(`thickness`, `color`, and `alpha`).
 
 		@param thickness    An integer that indicates the thickness of the line in
@@ -1341,10 +1336,10 @@ import js.html.CanvasRenderingContext2D;
 		@param color        A hexadecimal color value of the line; for example,
 							red is 0xFF0000, blue is 0x0000FF, and so on. If a
 							value is not indicated, the default is 0x000000
-							(black). Optional.
+						   (black). Optional.
 		@param alpha        A number that indicates the alpha value of the color
 							of the line; valid values are 0 to 1. If a value is
-							not indicated, the default is 1 (solid). If the value
+							not indicated, the default is 1(solid). If the value
 							is less than 0, the default is 0. If the value is
 							greater than 1, the default is 1.
 		@param pixelHinting (Not supported in Flash Lite 4) A Boolean value that
@@ -1360,7 +1355,7 @@ import js.html.CanvasRenderingContext2D;
 							rectangles that are identical, except that the
 							`pixelHinting` parameter used in the
 							`lineStyle()` method is set differently
-							(the images are scaled by 200%, to emphasize the
+						   (the images are scaled by 200%, to emphasize the
 							difference):
 
 							![pixelHinting false and pixelHinting true](/images/lineStyle_pixelHinting.jpg)
@@ -1373,7 +1368,7 @@ import js.html.CanvasRenderingContext2D;
 
 							 *  `LineScaleMode.NORMAL` - Always
 							scale the line thickness when the object is scaled
-							(the default).
+						   (the default).
 							 *  `LineScaleMode.NONE` - Never scale
 							the line thickness.
 							 *  `LineScaleMode.VERTICAL` - Do not
@@ -1410,9 +1405,9 @@ import js.html.CanvasRenderingContext2D;
 							For example, the following illustrations show the
 							different `capsStyle` settings. For each
 							setting, the illustration shows a blue line with a
-							thickness of 30 (for which the `capsStyle`
+							thickness of 30(for which the `capsStyle`
 							applies), and a superimposed black line with a
-							thickness of 1 (for which no `capsStyle`
+							thickness of 1(for which no `capsStyle`
 							applies):
 
 							![NONE, ROUND, and SQUARE](/images/linecap.jpg)
@@ -1428,9 +1423,9 @@ import js.html.CanvasRenderingContext2D;
 							For example, the following illustrations show the
 							different `joints` settings. For each
 							setting, the illustration shows an angled blue line
-							with a thickness of 30 (for which the
+							with a thickness of 30(for which the
 							`jointStyle` applies), and a superimposed
-							angled black line with a thickness of 1 (for which no
+							angled black line with a thickness of 1(for which no
 							`jointStyle` applies):
 
 							![MITER, ROUND, and BEVEL](/images/linejoin.jpg)
@@ -1441,7 +1436,7 @@ import js.html.CanvasRenderingContext2D;
 							of the miter.
 		@param miterLimit  (Not supported in Flash Lite 4) A number that
 							indicates the limit at which a miter is cut off. Valid
-							values range from 1 to 255 (and values outside that
+							values range from 1 to 255(and values outside that
 							range are rounded to 1 or 255). This value is only
 							used if the `jointStyle` is set to
 							`"miter"`. The `miterLimit`
@@ -1476,16 +1471,6 @@ import js.html.CanvasRenderingContext2D;
 	public function lineStyle(thickness:Null<Float> = null, color:Int = 0, alpha:Float = 1, pixelHinting:Bool = false,
 			scaleMode:LineScaleMode = LineScaleMode.NORMAL, caps:CapsStyle = null, joints:JointStyle = null, miterLimit:Float = 3):Void
 	{
-		if (caps == null)
-		{
-			caps = CapsStyle.ROUND;
-		}
-
-		if (joints == null)
-		{
-			joints = JointStyle.ROUND;
-		}
-
 		if (thickness != null)
 		{
 			if (joints == JointStyle.MITER)
@@ -1515,11 +1500,9 @@ import js.html.CanvasRenderingContext2D;
 		method fails and the current drawing position is not changed.
 
 		@param x A number that indicates the horizontal position relative to the
-				 registration point of the parent display object (in pixels).
+				 registration point of the parent display object(in pixels).
 		@param y A number that indicates the vertical position relative to the
-				 registration point of the parent display object (in pixels).
-
-		@see [Drawing lines and curves](https://books.openfl.org/openfl-developers-guide/using-the-drawing-api/drawing-lines-and-curves.html)
+				 registration point of the parent display object(in pixels).
 	**/
 	public function lineTo(x:Float, y:Float):Void
 	{
@@ -1550,9 +1533,9 @@ import js.html.CanvasRenderingContext2D;
 		drawing position is not changed.
 
 		@param x A number that indicates the horizontal position relative to the
-				 registration point of the parent display object (in pixels).
+				 registration point of the parent display object(in pixels).
 		@param y A number that indicates the vertical position relative to the
-				 registration point of the parent display object (in pixels).
+				 registration point of the parent display object(in pixels).
 	**/
 	public function moveTo(x:Float, y:Float):Void
 	{
@@ -1701,57 +1684,6 @@ import js.html.CanvasRenderingContext2D;
 		return false;
 	}
 
-	@:noCompletion private function __findExtrema(p1:Float, p2:Float, p3:Float, p4:Float):{min:Float, max:Float}
-	{
-		var solutions:Array<Float> = [];
-		if (!(((p2 < p4 && p2 > p1) || (p2 > p4 && p2 < p1)) && ((p3 < p4 && p3 > p1) || (p3 > p4 && p3 < p1))))
-		{
-			// The derivative of a cubic Bézier curve is a quadratic Bézier curve.
-			// f(t) = a * t * t + b * t + c = 0
-			var a = -p1 + 3 * p2 + p4 - 3 * p3;
-			var b = 2 * p1 - 4 * p2 + 2 * p3;
-			var c = p2 - p1;
-			// d is a discriminant
-			var d = b * b - 4 * a * c;
-			if (a == 0)
-			{
-				var t = -c / b;
-				if (t > 0 && t < 1)
-				{
-					solutions.push(__calculateBezierCubicPoint(t, p1, p2, p3, p4));
-				}
-			}
-			else if (d >= 0)
-			{
-				var t1 = (-b + Math.sqrt(d)) / (2 * a);
-				var t2 = (-b - Math.sqrt(d)) / (2 * a);
-				if (t1 > 0 && t1 < 1)
-				{
-					solutions.push(__calculateBezierCubicPoint(t1, p1, p2, p3, p4));
-				}
-				if (t2 > 0 && t2 < 1)
-				{
-					solutions.push(__calculateBezierCubicPoint(t2, p1, p2, p3, p4));
-				}
-			}
-		}
-		var min = p1;
-		var max = p1;
-		solutions.push(p4);
-		for (val in solutions)
-		{
-			if (val < min)
-			{
-				min = val;
-			}
-			if (val > max)
-			{
-				max = val;
-			}
-		}
-		return {min: min, max: max};
-	}
-
 	@:noCompletion private function __inflateBounds(x:Float, y:Float):Void
 	{
 		if (__bounds == null)
@@ -1789,8 +1721,7 @@ import js.html.CanvasRenderingContext2D;
 	@:noCompletion private function __readGraphicsData(graphicsData:Vector<IGraphicsData>):Void
 	{
 		var data = new DrawCommandReader(__commands);
-		var path:GraphicsPath = null;
-		var stroke:GraphicsStroke;
+		var path = null, stroke;
 
 		for (type in __commands.types)
 		{
@@ -1897,16 +1828,14 @@ import js.html.CanvasRenderingContext2D;
 		}
 	}
 
-	@:noCompletion private function __update(displayMatrix:Matrix, pixelRatio:Float):Void
+	@:noCompletion private function __update(displayMatrix:Matrix):Void
 	{
 		if (__bounds == null || __bounds.width <= 0 || __bounds.height <= 0) return;
 
 		var parentTransform = __owner.__renderTransform;
-		if (parentTransform == null) return;
+		var scaleX = 1.0, scaleY = 1.0;
 
-		var scaleX = pixelRatio, scaleY = pixelRatio;
-
-		if (__owner.__worldScale9Grid == null)
+		if (parentTransform != null)
 		{
 			if (parentTransform.b == 0)
 			{
@@ -1925,33 +1854,37 @@ import js.html.CanvasRenderingContext2D;
 			{
 				scaleY = Math.sqrt(parentTransform.c * parentTransform.c + parentTransform.d * parentTransform.d);
 			}
+		}
+		else
+		{
+			return;
+		}
 
-			if (displayMatrix != null)
+		if (displayMatrix != null)
+		{
+			if (displayMatrix.b == 0)
 			{
-				if (displayMatrix.b == 0)
-				{
-					scaleX *= displayMatrix.a;
-				}
-				else
-				{
-					scaleX *= Math.sqrt(displayMatrix.a * displayMatrix.a + displayMatrix.b * displayMatrix.b);
-				}
-
-				if (displayMatrix.c == 0)
-				{
-					scaleY *= displayMatrix.d;
-				}
-				else
-				{
-					scaleY *= Math.sqrt(displayMatrix.c * displayMatrix.c + displayMatrix.d * displayMatrix.d);
-				}
+				scaleX *= displayMatrix.a;
+			}
+			else
+			{
+				scaleX *= Math.sqrt(displayMatrix.a * displayMatrix.a + displayMatrix.b * displayMatrix.b);
 			}
 
-			#if openfl_disable_graphics_upscaling
-			if (scaleX > 1) scaleX = 1;
-			if (scaleY > 1) scaleY = 1;
-			#end
+			if (displayMatrix.c == 0)
+			{
+				scaleY *= displayMatrix.d;
+			}
+			else
+			{
+				scaleY *= Math.sqrt(displayMatrix.c * displayMatrix.c + displayMatrix.d * displayMatrix.d);
+			}
 		}
+
+		#if openfl_disable_graphics_upscaling
+		if (scaleX > 1) scaleX = 1;
+		if (scaleY > 1) scaleY = 1;
+		#end
 
 		var width = __bounds.width * scaleX;
 		var height = __bounds.height * scaleY;
@@ -1976,23 +1909,10 @@ import js.html.CanvasRenderingContext2D;
 			scaleY = maxTextureHeight / __bounds.height;
 		}
 
-		var inverseA:Float;
-		var inverseD:Float;
-
-		if (__owner.__worldScale9Grid != null)
-		{
-			__renderTransform.a = pixelRatio;
-			__renderTransform.d = pixelRatio;
-			inverseA = 1 / pixelRatio;
-			inverseD = 1 / pixelRatio;
-		}
-		else
-		{
-			__renderTransform.a = width / __bounds.width;
-			__renderTransform.d = height / __bounds.height;
-			inverseA = (1 / __renderTransform.a);
-			inverseD = (1 / __renderTransform.d);
-		}
+		__renderTransform.a = width / __bounds.width;
+		__renderTransform.d = height / __bounds.height;
+		var inverseA = (1 / __renderTransform.a);
+		var inverseD = (1 / __renderTransform.d);
 
 		// Inlined & simplified `__worldTransform.concat (parentTransform)` below:
 		__worldTransform.a = inverseA * parentTransform.a;
@@ -2005,31 +1925,13 @@ import js.html.CanvasRenderingContext2D;
 		var tx = x * parentTransform.a + y * parentTransform.c + parentTransform.tx;
 		var ty = x * parentTransform.b + y * parentTransform.d + parentTransform.ty;
 
-		#if openfl_disable_graphics_pixel_snapping
-		__worldTransform.tx = tx;
-		__worldTransform.ty = ty;
-		#else
 		// round the world position for crisp graphics rendering
-		if (pixelRatio > 1.0)
-		{
-			// on HiDPI screens, we can round to the nearest device pixel
-			// instead of the nearest stage pixel because device pixels have
-			// more precision.
-			// rendering will still be crisp, and animations will be smoother.
-			var nativePixelSize = 1 / pixelRatio;
-			__worldTransform.tx = Math.fround(tx / nativePixelSize) * nativePixelSize;
-			__worldTransform.ty = Math.fround(ty / nativePixelSize) * nativePixelSize;
-		}
-		else
-		{
-			__worldTransform.tx = Math.fround(tx);
-			__worldTransform.ty = Math.fround(ty);
-		}
+		__worldTransform.tx = Math.fround(tx);
+		__worldTransform.ty = Math.fround(ty);
 
 		// Offset the rendering with the subpixel offset removed by Math.round above
 		__renderTransform.tx = __worldTransform.__transformInverseX(tx, ty);
 		__renderTransform.ty = __worldTransform.__transformInverseY(tx, ty);
-		#end
 
 		// Calculate the size to contain the graphics and an extra subpixel
 		// We used to add tx and ty from __renderTransform instead of 1.0

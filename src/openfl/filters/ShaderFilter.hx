@@ -10,7 +10,6 @@ import openfl.display.Shader;
 	The ShaderFilter class applies a filter by executing a shader on the
 	object being filtered. The filtered object is used as an input to the
 	shader, and the shader output becomes the filter result.
-
 	To create a new filter, use the constructor `new ShaderFilter()`. The use
 	of filters depends on the object to which you apply the filter:
 
@@ -49,9 +48,6 @@ import openfl.display.Shader;
 	To allow the shader output to extend beyond the bounds of the filtered
 	object, use the `leftExtension`, `rightExtension`, `topExtension`, and
 	`bottomExtension` properties.
-
-	@see `openfl.display.DisplayObject.filters`
-	@see `openfl.display.BitmapData.applyFilter`
 **/
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
@@ -60,7 +56,7 @@ import openfl.display.Shader;
 class ShaderFilter extends BitmapFilter
 {
 	@:dox(hide) @:noCompletion @:beta @SuppressWarnings("checkstyle:FieldDocComment")
-	public var blendMode:BlendMode = NORMAL;
+	public var blendMode:BlendMode;
 
 	/**
 		The growth in pixels on the bottom side of the target object.
@@ -72,7 +68,7 @@ class ShaderFilter extends BitmapFilter
 
 		@default 0
 	**/
-	public var bottomExtension(get, set):Int;
+	public var bottomExtension:Int;
 
 	/**
 		The growth in pixels on the left side of the target object.
@@ -84,7 +80,7 @@ class ShaderFilter extends BitmapFilter
 
 		@default 0
 	**/
-	public var leftExtension(get, set):Int;
+	public var leftExtension:Int;
 
 	/**
 		The growth in pixels on the right side of the target object.
@@ -96,7 +92,7 @@ class ShaderFilter extends BitmapFilter
 
 		@default 0
 	**/
-	public var rightExtension(get, set):Int;
+	public var rightExtension:Int;
 
 	/**
 		The shader to use for this filter.
@@ -131,7 +127,7 @@ class ShaderFilter extends BitmapFilter
 
 		@default 0
 	**/
-	public var topExtension(get, set):Int;
+	public var topExtension:Int;
 
 	/**
 		Creates a new shader filter.
@@ -156,57 +152,12 @@ class ShaderFilter extends BitmapFilter
 		filter.leftExtension = leftExtension;
 		filter.rightExtension = rightExtension;
 		filter.topExtension = topExtension;
-		filter.blendMode = blendMode;
 		return filter;
 	}
 
 	public function invalidate():Void
 	{
 		__renderDirty = true;
-	}
-
-	private function get_topExtension():Int
-	{
-		return __topExtension;
-	}
-
-	private function set_topExtension(value:Int):Int
-	{
-		__topExtension = value;
-		return __topExtension;
-	}
-
-	private function get_bottomExtension():Int
-	{
-		return __bottomExtension;
-	}
-
-	private function set_bottomExtension(value:Int):Int
-	{
-		__bottomExtension = value;
-		return __bottomExtension;
-	}
-
-	private function get_leftExtension():Int
-	{
-		return __leftExtension;
-	}
-
-	private function set_leftExtension(value:Int):Int
-	{
-		__leftExtension = value;
-		return __leftExtension;
-	}
-
-	private function get_rightExtension():Int
-	{
-		return __rightExtension;
-	}
-
-	private function set_rightExtension(value:Int):Int
-	{
-		__rightExtension = value;
-		return __rightExtension;
 	}
 
 	@:noCompletion private override function __initShader(renderer:DisplayObjectRenderer, pass:Int, sourceBitmapData:BitmapData):Shader

@@ -150,8 +150,6 @@ import openfl.display3D.Context3D;
 
 	@:noCompletion private function __disableGL(context:Context3D, id:Int):Void
 	{
-		if (id < 0) return;
-
 		var gl = context.gl;
 		context.setTextureAt(id, null);
 	}

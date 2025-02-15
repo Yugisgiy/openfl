@@ -1,14 +1,14 @@
 package openfl.text;
 
 #if !flash
+
 #if !openfljs
 /**
 	The FontType class contains the enumerated constants
 	`"embedded"` and `"device"` for the
 	`fontType` property of the Font class.
 **/
-#if (haxe_ver >= 4.0) enum #else @:enum #end abstract FontType(Null<Int>)
-
+@:enum abstract FontType(Null<Int>)
 {
 	/**
 		Indicates that this is a device font. The SWF file renders fonts with
@@ -90,8 +90,7 @@ package openfl.text;
 }
 #else
 @SuppressWarnings("checkstyle:FieldDocComment")
-#if (haxe_ver >= 4.0) enum #else @:enum #end abstract FontType(String) from String to String
-
+@:enum abstract FontType(String) from String to String
 {
 	public var DEVICE = "device";
 	public var EMBEDDED = "embedded";

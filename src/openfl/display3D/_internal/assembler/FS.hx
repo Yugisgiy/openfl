@@ -1,6 +1,5 @@
 package openfl.display3D._internal.assembler;
 
-#if !flash
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
 @:noDebug
@@ -12,4 +11,3 @@ class FS
 
 	public function new() {}
 }
-#end

@@ -117,9 +117,7 @@ class Tilemap extends #if !flash DisplayObject #else Bitmap implements IDisplayO
 	{
 		super();
 
-		#if !flash
 		__drawableType = TILEMAP;
-		#end
 		__tileset = tileset;
 		this.smoothing = smoothing;
 
@@ -376,7 +374,7 @@ class Tilemap extends #if !flash DisplayObject #else Bitmap implements IDisplayO
 	}
 
 	#if !flash
-	@:noCompletion private override function __enterFrame(deltaTime:Float):Void
+	@:noCompletion private override function __enterFrame(deltaTime:Int):Void
 	{
 		if (__group.__dirty)
 		{
@@ -444,7 +442,7 @@ class Tilemap extends #if !flash DisplayObject #else Bitmap implements IDisplayO
 		return __height * Math.abs(scaleY);
 	}
 	#else
-	#if (haxe_ver >= 4.3) override #else @:setter(height) #end private function set_height(value:Float):#if (haxe_ver >= 4.3) Float #else Void #end
+	@:setter(height) private function set_height(value:Float):Void
 	{
 		if (value != bitmapData.height)
 		{
@@ -452,9 +450,6 @@ class Tilemap extends #if !flash DisplayObject #else Bitmap implements IDisplayO
 			bitmapData = new BitmapData(bitmapData.width, Std.int(value), true, 0);
 			smoothing = cacheSmoothing;
 		}
-		#if (haxe_ver >= 4.3)
-		return bitmapData.height;
-		#end
 	}
 	#end
 
@@ -498,7 +493,7 @@ class Tilemap extends #if !flash DisplayObject #else Bitmap implements IDisplayO
 		return __width * Math.abs(__scaleX);
 	}
 	#else
-	#if (haxe_ver >= 4.3) override #else @:setter(width) #end private function set_width(value:Float):#if (haxe_ver >= 4.3) Float #else Void #end
+	@:setter(width) private function set_width(value:Float):Void
 	{
 		if (value != bitmapData.width)
 		{
@@ -506,9 +501,6 @@ class Tilemap extends #if !flash DisplayObject #else Bitmap implements IDisplayO
 			bitmapData = new BitmapData(Std.int(value), bitmapData.height, true, 0);
 			smoothing = cacheSmoothing;
 		}
-		#if (haxe_ver >= 4.3)
-		return bitmapData.width;
-		#end
 	}
 	#end
 }

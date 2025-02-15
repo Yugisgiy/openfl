@@ -1,8 +1,6 @@
 package openfl.events;
 
 #if !flash
-import openfl.events.UncaughtErrorEvent;
-
 /**
 	The UncaughtErrorEvents class provides a way to receive uncaught error
 	events. An instance of this class dispatches an `uncaughtError` event when
@@ -39,8 +37,6 @@ import openfl.events.UncaughtErrorEvent;
 #end
 class UncaughtErrorEvents extends EventDispatcher
 {
-	@:noCompletion private var __enabled:Bool = #if (openfl_enable_handle_error || !openfl_disable_handle_error) true #else false #end;
-
 	/**
 		Creates an UncaughtErrorEvents instance. Developer code shouldn't
 		create UncaughtErrorEvents instances directly. To access an
@@ -53,29 +49,6 @@ class UncaughtErrorEvents extends EventDispatcher
 	public function new()
 	{
 		super();
-	}
-
-	public override function addEventListener<T>(type:EventType<T>, listener:T->Void, useCapture:Bool = false, priority:Int = 0,
-			useWeakReference:Bool = false):Void
-	{
-		super.addEventListener(type, listener, useCapture, priority, useWeakReference);
-
-		#if (openfl_enable_handle_error || !openfl_disable_handle_error)
-		if (__eventMap.exists(UncaughtErrorEvent.UNCAUGHT_ERROR))
-		{
-			__enabled = true;
-		}
-		#end
-	}
-
-	public override function removeEventListener<T>(type:EventType<T>, listener:T->Void, useCapture:Bool = false):Void
-	{
-		super.removeEventListener(type, listener, useCapture);
-
-		if (!__eventMap.exists(UncaughtErrorEvent.UNCAUGHT_ERROR))
-		{
-			__enabled = false;
-		}
 	}
 }
 #else

@@ -20,7 +20,6 @@ import lime.math.RGBA;
 	that inherit from the DisplayObject class), such as MovieClip,
 	SimpleButton, TextField, and Video objects, as well as to BitmapData
 	objects.
-
 	**Note:** For RGBA values, the most significant byte represents the red
 	channel value, followed by green, blue, and then alpha.
 
@@ -50,9 +49,6 @@ import lime.math.RGBA;
 	example, if you zoom in on a large movie clip with a filter applied, the
 	filter is turned off if the resulting image reaches the maximum
 	dimensions.
-
-	@see `openfl.display.DisplayObject.filters`
-	@see `openfl.display.BitmapData.applyFilter`
 **/
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
@@ -108,8 +104,8 @@ import lime.math.RGBA;
 		```
 
 		**Faster version**. Available only with SSE/AltiVec
-		accelerator-enabled processors, such as Intel<sup>®</sup>
-		Pentium<sup>®</sup> 3 and later and Apple<sup>®</sup> G4 and later.
+		accelerator-enabled processors, such as Intel<sup>�</sup>
+		Pentium<sup>�</sup> 3 and later and Apple<sup>�</sup> G4 and later.
 		The accelerator is used when the multiplier terms are in the range
 		-15.99 to 15.99 and the adder terms a[4], a[9], a[14], and a[19] are
 		in the range -8000 to 8000.
@@ -176,7 +172,7 @@ import lime.math.RGBA;
 		var sourcePremultiplied = sourceImage.buffer.premultiplied;
 		var destPremultiplied = image.buffer.premultiplied;
 
-		var sourcePixel:RGBA = 0, destPixel:RGBA = 0;
+		var sourcePixel:RGBA, destPixel:RGBA = 0;
 		var sourceOffset:Int, destOffset:Int;
 
 		for (row in Std.int(sourceRect.y)...Std.int(sourceRect.height))

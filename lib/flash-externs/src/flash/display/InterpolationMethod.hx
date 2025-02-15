@@ -1,8 +1,7 @@
 package flash.display;
 
 #if flash
-#if (haxe_ver >= 4.0) enum #else @:enum #end abstract InterpolationMethod(String) from String to String
-
+@:enum abstract InterpolationMethod(String) from String to String
 {
 	public var LINEAR_RGB = "linearRGB";
 	public var RGB = "rgb";

@@ -6,16 +6,9 @@ import openfl.utils.ByteArray;
 
 extern class Font extends LimeFont
 {
-	#if (haxe_ver < 4.3)
 	public var fontName(default, never):String;
 	public var fontStyle(default, never):FontStyle;
 	public var fontType(default, never):FontType;
-	#else
-	@:flash.property var fontName(get, never):String;
-	@:flash.property var fontStyle(get, never):FontStyle;
-	@:flash.property var fontType(get, never):FontType;
-	#end
-
 	public function new(#if (!flash || display) name:String = null #end);
 	public static function enumerateFonts(enumerateDeviceFonts:Bool = false):Array<Font>;
 	public static function fromBytes(bytes:ByteArray):Font;
@@ -39,12 +32,6 @@ extern class Font extends LimeFont
 		}
 		catch (e:Dynamic) {}
 	}
-
-	#if (haxe_ver >= 4.3)
-	private function get_fontName():String;
-	private function get_fontStyle():FontStyle;
-	private function get_fontType():FontType;
-	#end
 }
 #else
 typedef Font = openfl.text.Font;

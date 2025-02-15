@@ -1,6 +1,5 @@
 package openfl.display3D._internal.assembler;
 
-#if !flash
 import haxe.ds.StringMap;
 
 #if !openfl_debug
@@ -36,4 +35,3 @@ class RegMap
 		return RegMap._map;
 	}
 }
-#end

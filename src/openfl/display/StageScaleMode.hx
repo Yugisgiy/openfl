@@ -1,13 +1,13 @@
 package openfl.display;
 
 #if !flash
+
 #if !openfljs
 /**
 	The StageScaleMode class provides values for the
 	`Stage.scaleMode` property.
 **/
-#if (haxe_ver >= 4.0) enum #else @:enum #end abstract StageScaleMode(Null<Int>)
-
+@:enum abstract StageScaleMode(Null<Int>)
 {
 	/**
 		Specifies that the entire application be visible in the specified area without
@@ -62,8 +62,7 @@ package openfl.display;
 }
 #else
 @SuppressWarnings("checkstyle:FieldDocComment")
-#if (haxe_ver >= 4.0) enum #else @:enum #end abstract StageScaleMode(String) from String to String
-
+@:enum abstract StageScaleMode(String) from String to String
 {
 	public var EXACT_FIT = "exactFit";
 	public var NO_BORDER = "noBorder";

@@ -203,48 +203,6 @@ abstract Vector<T>(IVector<T>)
 	}
 
 	/**
-		Executes a test function on each item in the Vector until an item is reached
-		that returns false for the specified function. You use this method to determine
-		whether all items in a Vector meet a criterion, such as having values less than
-		a particular number.
-
-		For this method, the second parameter, thisObject, must be null if the first
-		parameter, callback, is a method closure. That is the most common way of using
-		this method.
-
-		@param	callback The function to run on each item in the Vector. This function
-		is invoked with three arguments: the current item from the Vector, the index of
-		the item, and the Vector object:
-
-			 	```haxe
-			 	function callback(item:T, index:Int, vector:Vector<T>):Bool {
-			 		// your code here
-		}
-		```
-		The callback function should return a Boolean value.
-
-		@param	thisObject The object that the identifer this in the callback function
-		refers to when the function is called. ***Ignored on targets other than neko and
-		js.
-		@return A Boolean value of true if the specified function returns true when called
-		on all items in the Vector; otherwise, false.
-	 */
-	public inline function every(callback:Function, ?thisObject:Dynamic):Bool
-	{
-		for (i in 0...this.length)
-		{
-			@:privateAccess this.__tempIndex = i;
-
-			if (thisObject != null)
-			{
-				if (Reflect.callMethod(thisObject, callback, [cast this.get(i), i, cast this]) == false) break;
-			}
-			else if (callback(cast this.get(i), i, cast this) == false) break;
-		}
-		return (@:privateAccess this.__tempIndex == this.length - 1);
-	}
-
-	/**
 		Executes a test function on each item in the Vector and returns a new Vector
 		containing all items that return true for the specified function. If an item
 		returns false, it is not included in the result Vector. The base type of the return
@@ -446,39 +404,6 @@ abstract Vector<T>(IVector<T>)
 	}
 
 	/**
-
-		@param	callback  The function to run on each item in the Vector. This function is
-		invoked with three arguments: the current item from the Vector, the index of the item,
-		and the Vector object:
-
-		```haxe
-		function callback(item:T, index:Int, vector:Vector<T>):Bool
-		```
-
-		The callback function should return a Boolean value.
-		@param	thisObject The object that the identifer this in the callback function refers
-		to when the function is called. ***Ignored on targets other than neko and js.
-		@return 	A Boolean value of true if any items in the Vector return true for the specified
-		function; otherwise, false.
-	 */
-	public inline function some(callback:Function, ?thisObject:Dynamic):Bool
-	{
-		for (i in 0...this.length)
-		{
-			@:privateAccess this.__tempIndex = i;
-
-			if (thisObject != null)
-			{
-				if (Reflect.callMethod(thisObject, callback, [cast this.get(i), i, cast this]) == true) break;
-			}
-			else if (callback(cast this.get(i), i, cast this)) break;
-
-			if (i == this.length - 1) @:privateAccess this.__tempIndex++;
-		}
-		return (@:privateAccess this.__tempIndex < this.length - 1);
-	}
-
-	/**
 		Sorts the elements in the Vector object, and also returns a sorted Vector object.
 		This method sorts according to the parameter sortBehavior, which is either a
 		function that compares two values, or a set of sorting options.
@@ -546,20 +471,9 @@ abstract Vector<T>(IVector<T>)
 		@throws	RangeError	If the startIndex and deleteCount arguments specify an index to be deleted that's outside the Vector's bounds.
 		@throws	RangeError	If this method is called while fixed is true and the splice() operation changes the length of the Vector.
 	**/
-	public inline function splice(startIndex:Int, deleteCount:Int #if (haxe_ver >= 4.2), ...items #end):Vector<T>
+	public inline function splice(startIndex:Int, deleteCount:Int):Vector<T>
 	{
-		#if (haxe_ver >= 4.2)
-		@:privateAccess this.__tempIndex = startIndex;
-
-		for (item in items)
-		{
-			this.insertAt(@:privateAccess this.__tempIndex, cast item);
-			@:privateAccess this.__tempIndex++;
-		}
-		return cast this.splice(@:privateAccess this.__tempIndex, deleteCount);
-		#else
 		return cast this.splice(startIndex, deleteCount);
-		#end
 	}
 
 	/**
@@ -721,7 +635,6 @@ abstract Vector<T>(IVector<T>)
 	public var length(get, set):Int;
 
 	@:noCompletion private var __array:Array<Bool>;
-	@:noCompletion private var __tempIndex:Int;
 
 	public function new(length:Int = 0, fixed:Bool = false, array:Array<Bool> = null):Void
 	{
@@ -970,7 +883,6 @@ abstract Vector<T>(IVector<T>)
 	public var length(get, set):Int;
 
 	@:noCompletion private var __array:Array<Float>;
-	@:noCompletion private var __tempIndex:Int;
 
 	@SuppressWarnings("checkstyle:Dynamic")
 	public function new(length:Int = 0, fixed:Bool = false, array:Array<Dynamic> = null, forceCopy:Bool = false):Void
@@ -1230,7 +1142,6 @@ abstract Vector<T>(IVector<T>)
 	public var length(get, set):Int;
 
 	@:noCompletion private var __array:Array<Function>;
-	@:noCompletion private var __tempIndex:Int;
 
 	public function new(length:Int = 0, fixed:Bool = false, array:Array<Function> = null):Void
 	{
@@ -1480,7 +1391,6 @@ abstract Vector<T>(IVector<T>)
 	public var length(get, set):Int;
 
 	@:noCompletion private var __array:Array<Int>;
-	@:noCompletion private var __tempIndex:Int;
 
 	public function new(length:Int = 0, fixed:Bool = false, array:Array<Int> = null):Void
 	{
@@ -1722,7 +1632,6 @@ abstract Vector<T>(IVector<T>)
 	public var length(get, set):Int;
 
 	@:noCompletion private var __array:Array<T>;
-	@:noCompletion private var __tempIndex:Int;
 
 	@SuppressWarnings("checkstyle:Dynamic")
 	public function new(length:Int = 0, fixed:Bool = false, array:Array<Dynamic> = null, forceCopy:Bool = false):Void
@@ -1970,7 +1879,6 @@ abstract Vector<T>(IVector<T>)
 {
 	public var fixed:Bool;
 	public var length(get, set):Int;
-
 	public function concat(vec:IVector<T> = null):IVector<T>;
 	public function copy():IVector<T>;
 	public function filter(callback:T->Bool):IVector<T>;
@@ -1991,8 +1899,6 @@ abstract Vector<T>(IVector<T>)
 	public function splice(pos:Int, len:Int):IVector<T>;
 	public function toString():String;
 	public function unshift(value:T):Void;
-
-	@:noCompletion private var __tempIndex:Int;
 }
 #else
 @SuppressWarnings("checkstyle:FieldDocComment")
@@ -2219,8 +2125,6 @@ abstract Vector<T>(VectorData<T>) from VectorData<T>
 {
 	public var fixed:Bool;
 	public var length(get, set):Int;
-
-	@:noCompletion private var __tempIndex:Int;
 
 	@:noCompletion private static function __init__()
 	{
@@ -2549,18 +2453,13 @@ abstract Vector<T>(VectorData<T>)
 	{
 		if (array != null)
 		{
-			this = ofArray(array);
+			this = VectorData.ofArray(array);
+
+			// if (length != null) this.length = length;
+			// if (fixed != null) this.fixed = fixed;
 		}
 		else
 		{
-			if (length == null)
-			{
-				length = 0;
-			}
-			if (fixed == null)
-			{
-				fixed = false;
-			}
 			this = new VectorData<T>(length, fixed);
 		}
 	}
@@ -2687,16 +2586,9 @@ abstract Vector<T>(VectorData<T>)
 		this.unshift(x);
 	}
 
-	public inline static function ofArray<T>(a:Array<T>):Vector<T>
+	public inline static function ofArray<T>(a:Array<Dynamic>):Vector<T>
 	{
-		if (a == null) return null;
-
-		var vec = new VectorData<T>();
-		for (i in 0...a.length)
-		{
-			vec[i] = a[i];
-		}
-		return vec;
+		return VectorData.ofArray(a);
 	}
 
 	public inline static function convert<T, U>(v:Vector<T>):Vector<U>

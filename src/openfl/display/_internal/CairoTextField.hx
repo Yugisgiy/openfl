@@ -1,7 +1,5 @@
 package openfl.display._internal;
 
-import openfl.text.Font;
-#if !flash
 import openfl.text._internal.TextEngine;
 import openfl.display.BitmapData;
 import openfl.display.CairoRenderer;
@@ -70,7 +68,7 @@ class CairoTextField
 						cursorOffsetX += textField.defaultTextFormat.indent;
 						cursorOffsetX += textField.defaultTextFormat.blockIndent;
 					case START:
-						// not supported?
+					// not supported?
 					case JUSTIFY:
 						cursorOffsetX += textField.defaultTextFormat.leftMargin;
 						cursorOffsetX += textField.defaultTextFormat.indent;
@@ -91,16 +89,10 @@ class CairoTextField
 			// graphics.__bounds.y += textField.__offsetY;
 		}
 
-		#if (openfl_disable_hdpi || openfl_disable_hdpi_textfield)
-		var pixelRatio = 1;
-		#else
-		var pixelRatio = renderer.__pixelRatio;
-		#end
+		graphics.__update(renderer.__worldTransform);
 
-		graphics.__update(renderer.__worldTransform, pixelRatio);
-
-		var width = Math.round(graphics.__width * pixelRatio);
-		var height = Math.round(graphics.__height * pixelRatio);
+		var width = graphics.__width;
+		var height = graphics.__height;
 
 		var renderable = (textEngine.border || textEngine.background || textEngine.text != null);
 		var needsUpscaling = false;
@@ -155,7 +147,6 @@ class CairoTextField
 			graphics.__managed = true;
 
 			graphics.__bitmap = bitmap;
-			graphics.__bitmapScale = pixelRatio;
 
 			cairo = graphics.__cairo;
 
@@ -186,13 +177,7 @@ class CairoTextField
 			cairo.setOperator(OVER);
 		}
 
-		var matrix = Matrix.__pool.get();
-		matrix.copyFrom(graphics.__renderTransform);
-		matrix.scale(pixelRatio, pixelRatio);
-
-		renderer.applyMatrix(matrix, cairo);
-
-		Matrix.__pool.release(matrix);
+		renderer.applyMatrix(graphics.__renderTransform, cairo);
 
 		if (textEngine.border)
 		{
@@ -241,13 +226,7 @@ class CairoTextField
 				scrollY -= textEngine.lineHeights[i];
 			}
 
-			var color:Int;
-			var r:Float;
-			var g:Float;
-			var b:Float;
-			var font:Font;
-			var size:Int;
-			var advance:Float;
+			var color, r, g, b, font, size, advance;
 
 			for (group in textEngine.layoutGroups)
 			{
@@ -293,7 +272,7 @@ class CairoTextField
 
 					cairo.translate(0, 0);
 
-					var glyphs:Array<CairoGlyph> = [];
+					var glyphs = [];
 					var x:Float = group.offsetX + scrollX - bounds.x;
 					var y:Float = group.offsetY + group.ascent + scrollY - bounds.y;
 
@@ -362,8 +341,7 @@ class CairoTextField
 								selectionEnd = group.endIndex;
 							}
 
-							var start:Rectangle;
-							var end:Rectangle;
+							var start, end;
 
 							start = textField.getCharBoundaries(selectionStart);
 
@@ -390,15 +368,10 @@ class CairoTextField
 
 								// TODO: draw only once
 
-								var selectedGylphs:Array<CairoGlyph> = [];
+								var selectedGylphs = [];
 
 								selectionStart -= group.startIndex;
 								selectionEnd -= group.startIndex;
-								if (selectionEnd > glyphs.length)
-								{
-									selectionEnd = glyphs.length;
-								}
-
 								for (i in selectionStart...selectionEnd)
 									selectedGylphs.push(glyphs[i]);
 								cairo.showGlyphs(selectedGylphs);
@@ -414,9 +387,8 @@ class CairoTextField
 
 						cairo.newPath();
 						cairo.lineWidth = 1;
-						var descent = Math.floor(group.ascent * 0.185);
 						var x = group.offsetX + scrollX - bounds.x;
-						var y = Math.ceil(group.offsetY + scrollY + group.ascent - bounds.y) + descent + 0.5;
+						var y = Math.floor(group.offsetY + scrollY + group.ascent - bounds.y) + 0.5;
 						cairo.moveTo(x, y);
 						cairo.lineTo(x + group.width, y);
 						cairo.stroke();
@@ -482,4 +454,3 @@ class CairoTextField
 		CairoDisplayObject.renderDrawableMask(textField, renderer);
 	}
 }
-#end

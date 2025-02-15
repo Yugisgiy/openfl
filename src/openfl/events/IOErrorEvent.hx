@@ -2,12 +2,13 @@ package openfl.events;
 
 #if !flash
 // import openfl.utils.ObjectPool;
+
 /**
 	An IOErrorEvent object is dispatched when an error causes input or output
 	operations to fail.
 
 	You can check for error events that do not have any listeners by using
-	the debugger version of Flash Player or the AIR Debug Launcher (ADL). The
+	the debugger version of Flash Player or the AIR Debug Launcher(ADL). The
 	string defined by the `text` parameter of the IOErrorEvent
 	constructor is displayed.
 **/
@@ -34,44 +35,6 @@ class IOErrorEvent extends ErrorEvent
 		| `text` | Text to be displayed as an error message. |
 	**/
 	public static inline var IO_ERROR:EventType<IOErrorEvent> = "ioError";
-
-	#if (haxe4 && sys)
-	/**
-		The `standardOutputIoError` event is dispatched when an error occurs
-		while reading data from the `standardOutput` stream of a NativeProcess
-		object.
-
-		This event has the following properties:
-
-		| Property | Value |
-		| --- | --- |
-		| `bubbles` | `false` |
-		| `cancelable` | `false`; there is no default behavior to cancel. |
-		| `currentTarget` | The object that is actively processing the Event. |
-		| `errorID` | The reference number associated with the specific error. |
-		| `target` | The object on which the error occurred. |
-		| `text` | Text to be displayed as an error message. |
-	**/
-	public static inline var STANDARD_OUTPUT_IO_ERROR:EventType<IOErrorEvent> = "standardOutputIoError";
-
-	/**
-		The `standardErrorIoError` event is dispatched when an error occurs
-		while reading data from the `standardError` stream of a NativeProcess
-		object.
-
-		This event has the following properties:
-
-		| Property | Value |
-		| --- | --- |
-		| `bubbles` | `false` |
-		| `cancelable` | `false`; there is no default behavior to cancel. |
-		| `currentTarget` | The object that is actively processing the Event. |
-		| `errorID` | The reference number associated with the specific error. |
-		| `target` | The object on which the error occurred. |
-		| `text` | Text to be displayed as an error message. |
-	**/
-	public static inline var STANDARD_ERROR_IO_ERROR:EventType<IOErrorEvent> = "standardErrorIoError";
-	#end
 
 	// @:noCompletion @:dox(hide) public static var NETWORK_ERROR:String;
 	// @:noCompletion @:dox(hide) public static var VERIFY_ERROR:String;

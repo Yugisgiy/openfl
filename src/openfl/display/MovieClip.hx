@@ -32,19 +32,11 @@ import openfl.events.MouseEvent;
 	stop the playhead in any child MovieClip objects of that MovieClip
 	object.
 
-	**Note:** Flash Lite 4 supports the MovieClip.opaqueBackground
+	**Note:**Flash Lite 4 supports the MovieClip.opaqueBackground
 	property only if FEATURE_BITMAPCACHE is defined. The default configuration
 	of Flash Lite 4 does not define FEATURE_BITMAPCACHE. To enable the
 	MovieClip.opaqueBackground property for a suitable device, define
 	FEATURE_BITMAPCACHE in your project.
-
-	@see [Working with movie clips](https://books.openfl.org/openfl-developers-guide/working-with-movie-clips/)
-	@see [Working with movie clips](https://books.openfl.org/openfl-developers-guide/working-with-movie-clips/basics-of-movie-clips.html)
-	@see [Working with MovieClip objects](https://books.openfl.org/openfl-developers-guide/working-with-movie-clips/working-with-movieclip-objects.html)
-	@see [Controlling movie clip playback](https://books.openfl.org/openfl-developers-guide/working-with-movie-clips/controlling-movie-clip-playback.html)
-	@see [Display programming](https://books.openfl.org/openfl-developers-guide/display-programming/)
-	@see [Basics of display programming](https://books.openfl.org/openfl-developers-guide/display-programming/basics-of-display-programming.html)
-	@see [Core display classes](https://books.openfl.org/openfl-developers-guide/display-programming/core-display-classes.html)
 **/
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
@@ -84,10 +76,6 @@ class MovieClip extends Sprite #if (openfl_dynamic && haxe_ver < "4.0.0") implem
 	**/
 	public var currentLabels(get, never):Array<FrameLabel>;
 
-	/**
-		The current scene in which the playhead is located in the timeline of
-		the MovieClip instance.
-	**/
 	public var currentScene(get, never):Scene;
 
 	/**
@@ -95,7 +83,7 @@ class MovieClip extends Sprite #if (openfl_dynamic && haxe_ver < "4.0.0") implem
 		default value of `enabled` is `true`. If
 		`enabled` is set to `false`, the movie clip's Over,
 		Down, and Up frames are disabled. The movie clip continues to receive
-		events (for example, `mouseDown`, `mouseUp`,
+		events(for example, `mouseDown`, `mouseUp`,
 		`keyDown`, and `keyUp`).
 
 		The `enabled` property governs only the button-like
@@ -121,15 +109,7 @@ class MovieClip extends Sprite #if (openfl_dynamic && haxe_ver < "4.0.0") implem
 	**/
 	public var framesLoaded(get, never):Int;
 
-	/**
-		A Boolean value that indicates whether a movie clip is curently playing.
-	**/
 	public var isPlaying(get, never):Bool;
-
-	/**
-		An array of Scene objects, each listing the name, the number of frames,
-		and the frame labels for a scene in the MovieClip instance.
-	**/
 	public var scenes(get, never):Array<Scene>;
 
 	/**
@@ -142,6 +122,8 @@ class MovieClip extends Sprite #if (openfl_dynamic && haxe_ver < "4.0.0") implem
 	public var totalFrames(get, never):Int;
 
 	// @:noCompletion @:dox(hide) public var trackAsMenu:Bool;
+	@:noCompletion private static var __constructor:MovieClip->Void;
+
 	@:noCompletion private var __enabled:Bool;
 	@:noCompletion private var __hasDown:Bool;
 	@:noCompletion private var __hasOver:Bool;
@@ -180,20 +162,16 @@ class MovieClip extends Sprite #if (openfl_dynamic && haxe_ver < "4.0.0") implem
 
 		__enabled = true;
 		// __type = MOVIE_CLIP;
+
+		if (__constructor != null)
+		{
+			var method = __constructor;
+			__constructor = null;
+
+			method(this);
+		}
 	}
 
-	/**
-		Adds a new FrameScript to this MovieClip.
-
-		The FrameScript will be executed automatically when the
-		MovieClip enters the specified frame.
-
-		This is only functional if this MovieClip has an attached
-		Timeline.
-
-		@param index A zero-based index referencing a frame
-		@param method A method to be called entering the requested frame.
-	**/
 	public function addFrameScript(index:Int, method:Void->Void):Void
 	{
 		if (__timeline != null)
@@ -202,14 +180,6 @@ class MovieClip extends Sprite #if (openfl_dynamic && haxe_ver < "4.0.0") implem
 		}
 	}
 
-	/**
-		Attaches a Timeline to this MovieClip.
-
-		MovieClips that contain a Timeline can play(), stop() and can
-		include FrameScripts.
-
-		@param timeline A Timeline object
-	**/
 	public function attachTimeline(timeline:Timeline):Void
 	{
 		__timeline = timeline;
@@ -220,12 +190,6 @@ class MovieClip extends Sprite #if (openfl_dynamic && haxe_ver < "4.0.0") implem
 		}
 	}
 
-	/**
-		Creates a new MovieClip based upon a Timeline instance.
-
-		@param timeline A Timeline object
-		@return A new Sprite
-	**/
 	public static function fromTimeline(timeline:Timeline):MovieClip
 	{
 		var movieClip = new MovieClip();
@@ -246,8 +210,6 @@ class MovieClip extends Sprite #if (openfl_dynamic && haxe_ver < "4.0.0") implem
 					 a scene, the playhead jumps to the frame number in the
 					 specified scene.
 		@param scene The name of the scene to play. This parameter is optional.
-
-		@see [Controlling movie clip playback](https://books.openfl.org/openfl-developers-guide/working-with-movie-clips/controlling-movie-clip-playback.html)
 	**/
 	public function gotoAndPlay(frame:#if (haxe_ver >= "3.4.2") Any #else Dynamic #end, scene:String = null):Void
 	{
@@ -273,8 +235,6 @@ class MovieClip extends Sprite #if (openfl_dynamic && haxe_ver < "4.0.0") implem
 		@param scene The name of the scene. This parameter is optional.
 		@throws ArgumentError If the `scene` or `frame`
 							  specified are not found in this movie clip.
-
-		@see [Controlling movie clip playback](https://books.openfl.org/openfl-developers-guide/working-with-movie-clips/controlling-movie-clip-playback.html)
 	**/
 	public function gotoAndStop(frame:#if (haxe_ver >= "3.4.2") Any #else Dynamic #end, scene:String = null):Void
 	{
@@ -288,7 +248,6 @@ class MovieClip extends Sprite #if (openfl_dynamic && haxe_ver < "4.0.0") implem
 		Sends the playhead to the next frame and stops it. This happens after all
 		remaining actions in the frame have finished executing.
 
-		@see [Controlling movie clip playback](https://books.openfl.org/openfl-developers-guide/working-with-movie-clips/controlling-movie-clip-playback.html)
 	**/
 	public function nextFrame():Void
 	{
@@ -308,8 +267,6 @@ class MovieClip extends Sprite #if (openfl_dynamic && haxe_ver < "4.0.0") implem
 
 	/**
 		Moves the playhead in the timeline of the movie clip.
-
-		@see [Controlling movie clip playback](https://books.openfl.org/openfl-developers-guide/working-with-movie-clips/controlling-movie-clip-playback.html)
 	**/
 	public function play():Void
 	{
@@ -323,7 +280,6 @@ class MovieClip extends Sprite #if (openfl_dynamic && haxe_ver < "4.0.0") implem
 		Sends the playhead to the previous frame and stops it. This happens after
 		all remaining actions in the frame have finished executing.
 
-		@see [Controlling movie clip playback](https://books.openfl.org/openfl-developers-guide/working-with-movie-clips/controlling-movie-clip-playback.html)
 	**/
 	public function prevFrame():Void
 	{
@@ -344,7 +300,6 @@ class MovieClip extends Sprite #if (openfl_dynamic && haxe_ver < "4.0.0") implem
 	/**
 		Stops the playhead in the movie clip.
 
-		@see [Controlling movie clip playback](https://books.openfl.org/openfl-developers-guide/working-with-movie-clips/controlling-movie-clip-playback.html)
 	**/
 	public function stop():Void
 	{
@@ -354,7 +309,7 @@ class MovieClip extends Sprite #if (openfl_dynamic && haxe_ver < "4.0.0") implem
 		}
 	}
 
-	@:noCompletion private override function __enterFrame(deltaTime:Float):Void
+	@:noCompletion private override function __enterFrame(deltaTime:Int):Void
 	{
 		if (__timeline != null)
 		{
@@ -610,5 +565,4 @@ class MovieClip extends Sprite #if (openfl_dynamic && haxe_ver < "4.0.0") implem
 }
 #else
 typedef MovieClip = flash.display.MovieClip;
-typedef MovieClip2 = flash.display.MovieClip.MovieClip2;
 #end

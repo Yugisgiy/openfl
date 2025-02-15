@@ -13,7 +13,6 @@ import openfl.events.EventDispatcher;
 import openfl.geom.Matrix3D;
 import openfl.Vector;
 #if lime
-import lime.graphics.opengl.GL;
 import lime.graphics.RenderContext;
 #end
 #if (js && html5)
@@ -25,7 +24,7 @@ import js.Browser;
 
 /**
 	The Stage class represents the main drawing area.
-	For SWF content running in the browser (in Flash<sup>®</sup> Player), the
+	For SWF content running in the browser (in Flash<sup>஼/sup> Player), the
 	Stage represents the entire area where Flash content is shown. For content
 	running in AIR on desktop operating systems, each NativeWindow object has
 	a corresponding Stage object.
@@ -90,7 +89,7 @@ import js.Browser;
 	@event fullScreen             Dispatched when the Stage object enters, or
 								  leaves, full-screen mode. A change in
 								  full-screen mode can be initiated through
-								  Haxe code, or the user invoking a
+								  ActionScript, or the user invoking a
 								  keyboard shortcut, or if the current focus
 								  leaves the full-screen window.
 	@event mouseLeave             Dispatched by the Stage object when the
@@ -395,73 +394,55 @@ class Stage3D extends EventDispatcher
 		}
 		else if (renderer.__type == DOM)
 		{
-			// TODO: Do not set Stage.context3D, create separate canvas elements for each Context3D
-
 			#if (js && html5)
-			if (stage.context3D == null)
+			__canvas = cast Browser.document.createElement("canvas");
+			__canvas.width = stage.stageWidth;
+			__canvas.height = stage.stageHeight;
+
+			var window = stage.window;
+			var attributes = renderer.__context.attributes;
+
+			var transparentBackground = Reflect.hasField(attributes, "background") && attributes.background == null;
+			var colorDepth = Reflect.hasField(attributes, "colorDepth") ? attributes.colorDepth : 32;
+
+			var options = {
+				alpha: (transparentBackground || colorDepth > 16) ? true : false,
+				antialias: Reflect.hasField(attributes, "antialiasing") ? attributes.antialiasing > 0 : false,
+				depth: true,
+				premultipliedAlpha: true,
+				stencil: true,
+				preserveDrawingBuffer: false
+			};
+
+			__webgl = cast __canvas.getContextWebGL(options);
+
+			if (__webgl != null)
 			{
-				__canvas = cast Browser.document.createElement("canvas");
-				__canvas.width = stage.stageWidth;
-				__canvas.height = stage.stageHeight;
+				#if webgl_debug
+				__webgl = untyped WebGLDebugUtils.makeDebugContext(__webgl);
+				#end
 
-				var window = stage.window;
-				var attributes = stage.window.context.attributes;
+				// TODO: Need to handle renderer/context better
 
-				var transparentBackground = Reflect.hasField(attributes, "background") && attributes.background == null;
-				var colorDepth = Reflect.hasField(attributes, "colorDepth") ? attributes.colorDepth : 32;
+				// TODO
 
-				var options = {
-					alpha: (transparentBackground || colorDepth > 16) ? true : false,
-					antialias: Reflect.hasField(attributes, "antialiasing") ? attributes.antialiasing > 0 : false,
-					depth: true,
-					premultipliedAlpha: true,
-					stencil: true,
-					preserveDrawingBuffer: false
-				};
+				// __renderContext = new GLRenderContext (cast __webgl);
+				// GL.context = __renderContext;
 
-				__webgl = cast __canvas.getContextWebGL(options);
+				// context3D = new Context3D (stage, this);
 
-				if (__webgl != null)
-				{
-					#if webgl_debug
-					__webgl = untyped WebGLDebugUtils.makeDebugContext(__webgl);
-					#end
+				// var renderer:DOMRenderer = cast renderer;
+				// renderer.element.appendChild (__canvas);
 
-					if (GL.context == null)
-					{
-						GL.context = cast __webgl;
-						GL.type = WEBGL;
-						// GL.version = isWebGL2 ? 2 : 1;
-						GL.version = 1;
-						// stage.window.context.webgl = GL.context;
-					}
+				// __style = __canvas.style;
+				// __style.setProperty ("position", "absolute", null);
+				// __style.setProperty ("top", "0", null);
+				// __style.setProperty ("left", "0", null);
+				// __style.setProperty (renderer.__transformOriginProperty, "0 0 0", null);
+				// __style.setProperty ("z-index", "-1", null);
 
-					stage.context3D = new Context3D(stage);
-					stage.context3D.configureBackBuffer(stage.window.width, stage.window.height, 0, true, true, true);
-					stage.context3D.present();
-
-					var renderer:DOMRenderer = cast renderer;
-					renderer.element.appendChild(__canvas);
-
-					__style = __canvas.style;
-					__style.setProperty("position", "absolute", null);
-					__style.setProperty("top", "0", null);
-					__style.setProperty("left", "0", null);
-					__style.setProperty(renderer.__transformOriginProperty, "0 0 0", null);
-					__style.setProperty("z-index", "-1", null);
-				}
-
-				if (stage.context3D != null)
-				{
-					#if openfl_share_context
-					context3D = stage.context3D;
-					#else
-					context3D = new Context3D(stage, stage.context3D.__contextState, this);
-					#end
-				}
-
-				__dispatchCreate();
-				// __dispatchError();
+				// __dispatchCreate ();
+				__dispatchError();
 			}
 			else
 			{
@@ -511,22 +492,7 @@ class Stage3D extends EventDispatcher
 			#end
 
 			__projectionTransform.copyRawDataFrom(new Vector<Float>([
-				2.0 / (width > 0 ? width : 1),
-				0.0,
-				0.0,
-				0.0,
-				0.0,
-				-2.0 / (height > 0 ? height : 1),
-				0.0,
-				0.0,
-				0.0,
-				0.0,
-				-2.0 / 2000,
-				0.0,
-				-1.0,
-				1.0,
-				0.0,
-				1.0
+				2.0 / (width > 0 ? width : 1), 0.0, 0.0, 0.0, 0.0, -2.0 / (height > 0 ? height : 1), 0.0, 0.0, 0.0, 0.0, -2.0 / 2000, 0.0, -1.0, 1.0, 0.0, 1.0
 			]));
 
 			__renderTransform.identity();

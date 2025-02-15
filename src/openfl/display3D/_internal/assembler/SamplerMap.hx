@@ -1,6 +1,5 @@
 package openfl.display3D._internal.assembler;
 
-#if !flash
 import haxe.ds.StringMap;
 
 #if !openfl_debug
@@ -48,4 +47,3 @@ class SamplerMap
 		return SamplerMap._map;
 	}
 }
-#end

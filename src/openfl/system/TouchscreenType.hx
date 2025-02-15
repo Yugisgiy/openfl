@@ -1,6 +1,7 @@
 package openfl.system;
 
 #if !flash
+
 #if !openfljs
 /**
 	The TouchscreenType class is an enumeration class that provides values for
@@ -8,8 +9,7 @@ package openfl.system;
 	Use the values defined by the TouchscreenType class with the
 	`Capabilities.touchscreenType` property.
 **/
-#if (haxe_ver >= 4.0) enum #else @:enum #end abstract TouchscreenType(Null<Int>)
-
+@:enum abstract TouchscreenType(Null<Int>)
 {
 	/**
 		A touchscreen designed to respond to finger touches.
@@ -50,8 +50,7 @@ package openfl.system;
 }
 #else
 @SuppressWarnings("checkstyle:FieldDocComment")
-#if (haxe_ver >= 4.0) enum #else @:enum #end abstract TouchscreenType(String) from String to String
-
+@:enum abstract TouchscreenType(String) from String to String
 {
 	public var FINGER = "finger";
 	public var NONE = "none";

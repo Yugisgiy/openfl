@@ -1,8 +1,7 @@
 package flash.display;
 
 #if flash
-#if (haxe_ver >= 4.0) enum #else @:enum #end abstract GradientType(String) from String to String
-
+@:enum abstract GradientType(String) from String to String
 {
 	public var LINEAR = "linear";
 	public var RADIAL = "radial";

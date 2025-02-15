@@ -9,8 +9,7 @@ import openfl.utils._internal.NullUtils;
 /**
 	Defines the values to use for specifying a texture format.
 **/
-#if (haxe_ver >= 4.0) enum #else @:enum #end abstract Context3DTextureFormat(Null<Int>)
-
+@:enum abstract Context3DTextureFormat(Null<Int>)
 {
 	/**
 		16 bit, bgr packed as 5:6:5
@@ -86,8 +85,7 @@ import openfl.utils._internal.NullUtils;
 }
 #else
 @SuppressWarnings("checkstyle:FieldDocComment")
-#if (haxe_ver >= 4.0) enum #else @:enum #end abstract Context3DTextureFormat(String) from String to String
-
+@:enum abstract Context3DTextureFormat(String) from String to String
 {
 	public var BGR_PACKED = "bgrPacked565";
 	public var BGRA = "bgra";

@@ -1,11 +1,9 @@
 package openfl.events;
 
 #if !flash
+// import openfl.utils.ObjectPool;
 import openfl.display.InteractiveObject;
 import openfl.geom.Point;
-#if openfl_pool_events
-import openfl.utils.ObjectPool;
-#end
 
 /**
 	A MouseEvent object is dispatched into the event flow whenever mouse events
@@ -18,8 +16,6 @@ import openfl.utils.ObjectPool;
 	of a mouse event, use `EventDispatcher.addEventListener()` on
 	the ancestor node with the `type` parameter set to the specific
 	mouse event you want to detect.
-
-	@see [Capturing mouse input](https://books.openfl.org/openfl-developers-guide/mouse-input/capturing-mouse-input.html)
 **/
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
@@ -456,31 +452,25 @@ class MouseEvent extends Event
 	public static inline var ROLL_OVER:EventType<MouseEvent> = "rollOver";
 
 	/**
-		Indicates whether the Alt key is active (`true`) or inactive
+		Indicates whether the Alt key is active(`true`) or inactive
 		(`false`). Supported for Windows only. On other operating
 		systems, this property is always set to `false`.
 	**/
 	public var altKey:Bool;
 
 	/**
-		Indicates whether the primary mouse button is pressed (`true`)
-		or not (`false`).
+		Indicates whether the primary mouse button is pressed(`true`)
+		or not(`false`).
 	**/
 	public var buttonDown:Bool;
 
 	/**
 		Indicates whether the command key is activated (Mac only.)
 
-		The value of property `commandKey` will have the same value as property
-		`ctrlKey` on the Mac. Always `false` on Windows or Linux.
+		The value of property `commandKey` will have the same value as property `ctrlKey`
+		on the Mac. Always `false` on Windows or Linux.
 	**/
 	public var commandKey:Bool;
-
-	/**
-		Indicates whether the Control key is activated on Mac and whether the
-		Ctrl key is activated on Windows or Linux.
-	**/
-	public var controlKey:Bool;
 
 	/**
 		Indicates whether or not the mouse down event is part of a multi-click sequence.
@@ -500,7 +490,7 @@ class MouseEvent extends Event
 
 	/**
 		On Windows or Linux, indicates whether the Ctrl key is active
-		(`true`) or inactive (`false`). On Macintosh,
+		(`true`) or inactive(`false`). On Macintosh,
 		indicates whether either the Control key or the Command key is activated.
 	**/
 	public var ctrlKey:Bool;
@@ -558,7 +548,7 @@ class MouseEvent extends Event
 	public var relatedObject:InteractiveObject;
 
 	/**
-		Indicates whether the Shift key is active (`true`) or inactive
+		Indicates whether the Shift key is active(`true`) or inactive
 		(`false`).
 	**/
 	public var shiftKey:Bool;
@@ -580,15 +570,10 @@ class MouseEvent extends Event
 	@:noCompletion private static var __altKey:Bool;
 	@:noCompletion private static var __buttonDown:Bool;
 	@:noCompletion private static var __commandKey:Bool;
-	@:noCompletion private static var __controlKey:Bool;
 	@:noCompletion private static var __ctrlKey:Bool;
-	#if openfl_pool_events
-	@:noCompletion private static var __pool:ObjectPool<MouseEvent> = new ObjectPool<MouseEvent>(function() return new MouseEvent(null),
-		function(event) event.__init());
-	#end
+	// @:noCompletion private static var __pool:ObjectPool<MouseEvent> = new ObjectPool<MouseEvent>(function() return new MouseEvent(null),
+	// function(event) event.__init());
 	@:noCompletion private static var __shiftKey:Bool;
-
-	@:noCompletion private var __updateAfterEventFlag:Bool;
 
 	/**
 		Creates an Event object that contains information about mouse events.
@@ -626,7 +611,7 @@ class MouseEvent extends Event
 		@param ctrlKey       On Windows or Linux, indicates whether the Ctrl key
 							 is activated. On Mac, indicates whether either the
 							 Ctrl key or the Command key is activated.
-		@param altKey        Indicates whether the Alt key is activated (Windows
+		@param altKey        Indicates whether the Alt key is activated(Windows
 							 or Linux only).
 		@param shiftKey      Indicates whether the Shift key is activated.
 		@param buttonDown    Indicates whether the primary mouse button is
@@ -641,7 +626,7 @@ class MouseEvent extends Event
 	**/
 	public function new(type:String, bubbles:Bool = true, cancelable:Bool = false, localX:Float = 0, localY:Float = 0, relatedObject:InteractiveObject = null,
 			ctrlKey:Bool = false, altKey:Bool = false, shiftKey:Bool = false, buttonDown:Bool = false, delta:Int = 0, commandKey:Bool = false,
-			controlKey:Bool = false, clickCount:Int = 0)
+			clickCount:Int = 0)
 	{
 		super(type, bubbles, cancelable);
 
@@ -655,20 +640,17 @@ class MouseEvent extends Event
 		this.localY = localY;
 		this.buttonDown = buttonDown;
 		this.commandKey = commandKey;
-		this.controlKey = controlKey;
 		this.clickCount = clickCount;
 
 		isRelatedObjectInaccessible = false;
 		stageX = Math.NaN;
 		stageY = Math.NaN;
-
-		__updateAfterEventFlag = false;
 	}
 
 	public override function clone():MouseEvent
 	{
 		var event = new MouseEvent(type, bubbles, cancelable, localX, localY, relatedObject, ctrlKey, altKey, shiftKey, buttonDown, delta, commandKey,
-			controlKey, clickCount);
+			clickCount);
 		event.target = target;
 		event.currentTarget = currentTarget;
 		event.eventPhase = eventPhase;
@@ -678,38 +660,21 @@ class MouseEvent extends Event
 	public override function toString():String
 	{
 		return __formatToString("MouseEvent", [
-			"type",
-			"bubbles",
-			"cancelable",
-			"localX",
-			"localY",
-			"relatedObject",
-			"ctrlKey",
-			"altKey",
-			"shiftKey",
-			"buttonDown",
-			"delta"
+			"type", "bubbles", "cancelable", "localX", "localY", "relatedObject", "ctrlKey", "altKey", "shiftKey", "buttonDown", "delta"
 		]);
 	}
 
 	/**
-		Instructs OpenFL to render after processing of this event completes, if
-		the display list has been modified.
+		Instructs Flash Player or Adobe AIR to render after processing of this
+		event completes, if the display list has been modified.
 
-		On all targets except Flash/AIR, requires
-		`openfl_always_dispatch_mouse_events` to be defined because OpenFL will
-		throttle mouse events to the frame rate.
 	**/
-	public function updateAfterEvent():Void
-	{
-		__updateAfterEventFlag = true;
-	}
+	public function updateAfterEvent():Void {}
 
-	@:noCompletion private static function __create(type:String, button:Int, clickCount:Int, stageX:Float, stageY:Float, local:Point,
-			target:InteractiveObject, delta:Int = 0):MouseEvent
+	@:noCompletion private static function __create(type:String, button:Int, stageX:Float, stageY:Float, local:Point, target:InteractiveObject,
+			delta:Int = 0):MouseEvent
 	{
-		var event = new MouseEvent(type, true, false, local.x, local.y, null, __ctrlKey, __altKey, __shiftKey, __buttonDown, delta, __commandKey,
-			__controlKey, clickCount);
+		var event = new MouseEvent(type, true, false, local.x, local.y, null, __ctrlKey, __altKey, __shiftKey, __buttonDown, delta, __commandKey);
 		event.stageX = stageX;
 		event.stageY = stageY;
 		event.target = target;
@@ -730,14 +695,11 @@ class MouseEvent extends Event
 		localY = 0;
 		buttonDown = false;
 		commandKey = false;
-		controlKey = false;
 		clickCount = 0;
 
 		isRelatedObjectInaccessible = false;
 		stageX = Math.NaN;
 		stageY = Math.NaN;
-
-		__updateAfterEventFlag = false;
 	}
 }
 #else

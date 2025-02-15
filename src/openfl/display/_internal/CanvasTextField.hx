@@ -1,6 +1,5 @@
 package openfl.display._internal;
 
-#if !flash
 import openfl.text._internal.HTMLParser;
 import openfl.text._internal.TextEngine;
 import openfl.display.BitmapData;
@@ -70,7 +69,7 @@ class CanvasTextField
 						cursorOffsetX += textField.defaultTextFormat.indent / 2;
 						cursorOffsetX += textField.defaultTextFormat.blockIndent / 2;
 					case START:
-						// not supported?
+					// not supported?
 					case JUSTIFY:
 						cursorOffsetX += textField.defaultTextFormat.leftMargin;
 						cursorOffsetX += textField.defaultTextFormat.indent;
@@ -89,18 +88,12 @@ class CanvasTextField
 			graphics.__bounds.copyFrom(bounds);
 		}
 
-		#if (openfl_disable_hdpi || openfl_disable_hdpi_textfield)
-		var pixelRatio = 1;
-		#else
-		var pixelRatio = renderer.__pixelRatio;
-		#end
-
-		graphics.__update(renderer.__worldTransform, pixelRatio);
+		graphics.__update(renderer.__worldTransform);
 
 		if (textField.__dirty || graphics.__softwareDirty)
 		{
-			var width = Math.round(graphics.__width * pixelRatio);
-			var height = Math.round(graphics.__height * pixelRatio);
+			var width = graphics.__width;
+			var height = graphics.__height;
 
 			if (((textEngine.text == null || textEngine.text == "")
 				&& !textEngine.background
@@ -126,22 +119,32 @@ class CanvasTextField
 
 				context = graphics.__context;
 
-				graphics.__canvas.width = width;
-				graphics.__canvas.height = height;
+				var transform = graphics.__renderTransform;
 
 				if (renderer.__isDOM)
 				{
-					graphics.__canvas.style.width = Math.round(width / pixelRatio) + "px";
-					graphics.__canvas.style.height = Math.round(height / pixelRatio) + "px";
+					var scale = renderer.pixelRatio;
+
+					graphics.__canvas.width = Std.int(width * scale);
+					graphics.__canvas.height = Std.int(height * scale);
+					graphics.__canvas.style.width = width + "px";
+					graphics.__canvas.style.height = height + "px";
+
+					var matrix = Matrix.__pool.get();
+					matrix.copyFrom(transform);
+					matrix.scale(scale, scale);
+
+					renderer.setTransform(matrix, context);
+
+					Matrix.__pool.release(matrix);
 				}
+				else
+				{
+					graphics.__canvas.width = width;
+					graphics.__canvas.height = height;
 
-				var matrix = Matrix.__pool.get();
-				matrix.scale(pixelRatio, pixelRatio);
-				matrix.concat(graphics.__renderTransform);
-
-				context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-
-				Matrix.__pool.release(matrix);
+					context.setTransform(transform.a, transform.b, transform.c, transform.d, transform.tx, transform.ty);
+				}
 
 				if (clearRect == null)
 				{
@@ -152,11 +155,6 @@ class CanvasTextField
 				{
 					context.clearRect(0, 0, graphics.__canvas.width, graphics.__canvas.height);
 				}
-
-				#if openfl_hack_fix_chrome_text
-				context.fillStyle = "rgba(0, 0, 0, 0.01)";
-				context.fillRect(0, 0, graphics.__canvas.width, graphics.__canvas.height);
-				#end
 
 				if ((textEngine.text != null && textEngine.text != "") || textEngine.__hasFocus)
 				{
@@ -200,7 +198,7 @@ class CanvasTextField
 						scrollY -= textEngine.lineHeights[i];
 					}
 
-					var advance:Float;
+					var advance;
 
 					for (group in textEngine.layoutGroups)
 					{
@@ -279,8 +277,7 @@ class CanvasTextField
 									selectionEnd = group.endIndex;
 								}
 
-								var start:Rectangle;
-								var end:Rectangle;
+								var start, end;
 
 								start = textField.getCharBoundaries(selectionStart);
 
@@ -317,9 +314,8 @@ class CanvasTextField
 							context.beginPath();
 							context.strokeStyle = color;
 							context.lineWidth = 1;
-							var descent = Math.floor(group.ascent * 0.185);
 							var x = group.offsetX + scrollX - bounds.x;
-							var y = Math.ceil(group.offsetY + scrollY + group.ascent - bounds.y) + descent + 0.5;
+							var y = Math.floor(group.offsetY + scrollY + group.ascent - bounds.y) + 0.5;
 							context.moveTo(x, y);
 							context.lineTo(x + group.width, y);
 							context.stroke();
@@ -376,7 +372,6 @@ class CanvasTextField
 				}
 
 				graphics.__bitmap = BitmapData.fromCanvas(textField.__graphics.__canvas);
-				graphics.__bitmapScale = pixelRatio;
 				graphics.__visible = true;
 				textField.__dirty = false;
 				graphics.__softwareDirty = false;
@@ -402,8 +397,7 @@ class CanvasTextField
 
 			if (textField.__isHTML)
 			{
-				textField.__updateText(HTMLParser.parse(textField.__text, textField.multiline, textField.__styleSheet, textField.__textFormat,
-					textField.__textEngine.textFormatRanges));
+				textField.__updateText(HTMLParser.parse(textField.__text, textField.__textFormat, textField.__textEngine.textFormatRanges));
 			}
 
 			textField.__dirty = true;
@@ -451,4 +445,3 @@ class CanvasTextField
 		CanvasDisplayObject.renderDrawableMask(textField, renderer);
 	}
 }
-#end

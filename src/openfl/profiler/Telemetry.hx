@@ -7,7 +7,7 @@ import hxtelemetry.HxTelemetry;
 import openfl.utils._internal.Lib;
 
 /**
-	The Telemetry class lets an application profile Haxe code and register handlers
+	The Telemetry class lets an application profile ActionScript code and register handlers
 	for commands
 **/
 #if !openfl_debug
@@ -187,8 +187,7 @@ import openfl.utils._internal.Lib;
 }
 
 @SuppressWarnings("checkstyle:FieldDocComment")
-@:noCompletion @:dox(hide) #if (haxe_ver >= 4.0) enum #else @:enum #end abstract TelemetryCommandName(String) from String to String
-
+@:noCompletion @:dox(hide) @:enum abstract TelemetryCommandName(String) from String to String
 {
 	public var EVENT = ".event";
 	public var RENDER = ".render";

@@ -19,33 +19,33 @@ package openfl.utils;
 	example, the following class will not serialize any of its members because they are
 	private:
 
-	```haxe
+	```as3
 	class Example {
 
-		private var one:Int;
-		private var two:Int;
+		private var one:int;
+		private var two:int;
 	}
 	```
 
 	However, if you implement the IExternalizable interface, you can write to, and read
 	from, the data stream the private members of the class as follows:
 
-	```haxe
+	```as3
 	class Example implement IExternalizable {
 
-		private var one:Int;
-		private var two:Int;
+		private var one:int;
+		private var two:int;
 
-		public function writeExternal(output:IDataOutput):Void {
+		public function writeExternal(output:IDataOutput) {
 
-			output.writeInt(one);
-			output.writeInt(two);
+				output.writeInt(one);
+				output.writeInt(two);
 		}
 
-		public function readExternal(input:IDataInput):Void {
+		public function readExternal(input:IDataInput) {
 
-			one = input.readInt();
-			two = input.readInt();
+				one = input.readInt();
+				two = input.readInt();
 		}
 	}
 	```
@@ -57,34 +57,34 @@ package openfl.utils;
 	When a subclass of a class implementing IExternalizable has private members of its own,
 	the subclass must override the methods of IExternalizable, as follows:
 
-	```haxe
-	class Base implements IExternalizable {
+	```as3
+	public class Base implements IExternalizable {
 
 		private var one:Boolean;
 
-		public function writeExternal(output:IDataOutput):Void {
+		public function writeExternal(output:IDataOutput):void {
 
 			output.writeBoolean(one);
 		}
 
-		public function readExternal(input:IDataInput):Void {
+		public function readExternal(input:IDataInput):void {
 
 			one = input.readBoolean();
 		}
 	}
 
-	class Example extends Base {
+	public class Example extends Base {
 
 		private var one:String;
 
 
-		public override function writeExternal(output:IDataOutput):Void {
+		public override function writeExternal(output:IDataOutput):void {
 
 			super.writeExternal(output);
 			output.writeUTF(one);
 		}
 
-		public override function readExternal(input:IDataInput):Void {
+		public override function readExternal(input:IDataInput):void {
 
 			super.readExternal(input);
 			one = input.readUTF();
@@ -95,21 +95,21 @@ package openfl.utils;
 	The IExternalizable interface can also be used to compress data before writing it to a
 	data stream. For example:
 
-	```haxe
+	```as3
 	class Example implements IExternalizable {
 
-		public var one:Bool;
-		public var two:Bool;
-		public var three:Bool;
-		public var four:Bool;
-		public var five:Bool;
-		public var six:Bool;
-		public var seven:Bool;
-		public var eight:Bool;
+		public var one:Boolean;
+		public var two:Boolean;
+		public var three:Boolean;
+		public var four:Boolean;
+		public var five:Boolean;
+		public var six:Boolean;
+		public var seven:Boolean;
+		public var eight:Boolean;
 
-		public function writeExternal(output:IDataOutput):Void {
+		public function writeExternal(output:IDataOutput) {
 
-			var flag:Int = 0;
+			var flag:int = 0;
 
 			if (one) flag |= 1;
 			if (two) flag |= 2;
@@ -123,9 +123,9 @@ package openfl.utils;
 			output.writeByte(flag);
 		}
 
-		public function readExternal(input:IDataInput):Void {
+		public function readExternal(input:IDataInput) {
 
-			var flag:Int = input.readByte();
+			var flag:int = input.readByte();
 
 			one = (flag & 1) != 0;
 			two = (flag & 2) != 0;

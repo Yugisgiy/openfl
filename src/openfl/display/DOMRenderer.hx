@@ -43,6 +43,11 @@ class DOMRenderer extends DisplayObjectRenderer
 	@SuppressWarnings("checkstyle:Dynamic")
 	public var element:#if lime DOMRenderContext #else Dynamic #end;
 
+	/**
+		The active pixel ratio used during rendering
+	**/
+	public var pixelRatio(default, null):Float = 1;
+
 	@:noCompletion private var __canvasRenderer:CanvasRenderer;
 	@:noCompletion private var __clipRects:Array<Rectangle>;
 	@:noCompletion private var __currentClipRect:Rectangle;
@@ -309,7 +314,7 @@ class DOMRenderer extends DisplayObjectRenderer
 		switch (object.__drawableType)
 		{
 			case BITMAP_DATA:
-				// DOMBitmapData.renderDrawable(cast object, this);
+			// DOMBitmapData.renderDrawable(cast object, this);
 			case STAGE, SPRITE:
 				DOMDisplayObjectContainer.renderDrawable(cast object, this);
 			case BITMAP:
@@ -360,7 +365,7 @@ class DOMRenderer extends DisplayObjectRenderer
 		switch (object.__drawableType)
 		{
 			case BITMAP_DATA:
-				// DOMBitmapData.renderDrawableClear(cast object, this);
+			// DOMBitmapData.renderDrawableClear(cast object, this);
 			case STAGE, SPRITE:
 				DOMDisplayObjectContainer.renderDrawableClear(cast object, this);
 			case BITMAP:

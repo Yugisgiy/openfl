@@ -170,8 +170,6 @@ import openfl.display3D.Context3D;
 
 	@:noCompletion private function __disableGL(context:Context3D):Void
 	{
-		if (index < 0) return;
-
 		var gl = context.gl;
 
 		if (!__isUniform)
@@ -185,8 +183,6 @@ import openfl.display3D.Context3D;
 
 	@:noCompletion private function __updateGL(context:Context3D, overrideValue:Array<T> = null):Void
 	{
-		if (index < 0) return;
-
 		#if lime
 		var gl = context.gl;
 
@@ -421,8 +417,6 @@ import openfl.display3D.Context3D;
 
 	@:noCompletion private function __updateGLFromBuffer(context:Context3D, buffer:Float32Array, position:Int, length:Int, bufferOffset:Int):Void
 	{
-		if (index < 0) return;
-
 		#if lime
 		var gl = context.gl;
 

@@ -1,13 +1,13 @@
 package openfl.display;
 
 #if !flash
+
 #if !openfljs
 /**
 	The LineScaleMode class provides values for the `scaleMode`
 	parameter in the `Graphics.lineStyle()` method.
 **/
-#if (haxe_ver >= 4.0) enum #else @:enum #end abstract LineScaleMode(Null<Int>)
-
+@:enum abstract LineScaleMode(Null<Int>)
 {
 	/**
 		With this setting used as the `scaleMode` parameter of the
@@ -29,7 +29,7 @@ package openfl.display;
 	/**
 		With this setting used as the `scaleMode` parameter of the
 		`lineStyle()` method, the thickness of the line always scales
-		when the object is scaled (the default).
+		when the object is scaled(the default).
 	**/
 	public var NORMAL = 2;
 
@@ -80,8 +80,7 @@ package openfl.display;
 }
 #else
 @SuppressWarnings("checkstyle:FieldDocComment")
-#if (haxe_ver >= 4.0) enum #else @:enum #end abstract LineScaleMode(String) from String to String
-
+@:enum abstract LineScaleMode(String) from String to String
 {
 	public var HORIZONTAL = "horizontal";
 	public var NONE = "none";

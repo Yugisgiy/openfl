@@ -62,11 +62,9 @@ class Window #if lime extends LimeWindow #end
 			catch (e:Dynamic) {}
 		}
 
-		stage.__setLogicalSize(attributes.width, attributes.height);
-
 		if (Reflect.hasField(attributes, "resizable") && !attributes.resizable)
 		{
-			stage.scaleMode = StageScaleMode.SHOW_ALL;
+			stage.__setLogicalSize(attributes.width, attributes.height);
 		}
 
 		#if lime
@@ -75,23 +73,5 @@ class Window #if lime extends LimeWindow #end
 		#else
 		stage = Lib.current.stage;
 		#end
-	}
-
-	override public function close():Void
-	{
-		super.close();
-		if (onClose.canceled)
-		{
-			return;
-		}
-		if (stage == null)
-		{
-			// already closed
-			return;
-		}
-		#if (!flash && lime)
-		application.removeModule(stage);
-		#end
-		stage = null;
 	}
 }

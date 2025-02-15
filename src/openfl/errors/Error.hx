@@ -5,8 +5,8 @@ import haxe.CallStack;
 
 /**
 	The Error class contains information about an error that occurred in a script. In
-	developing OpenFL applications, when you run your compiled code in a
-	debugger, a message displays exceptions of type Error,
+	developing ActionScript 3.0 applications, when you run your compiled code in the
+	debugger version of a Flash runtime, a dialog box displays exceptions of type Error,
 	or of a subclass, to help you troubleshoot the code. You create an Error object by
 	using the Error constructor function. Typically, you throw a new Error object from
 	within a `try` code block that is caught by a `catch` code block.
@@ -17,7 +17,7 @@ import haxe.CallStack;
 @:fileXml('tags="haxe,release"')
 @:noDebug
 #end
-class Error #if (haxe_ver >= "4.1.0") extends haxe.Exception #elseif (openfl_dynamic && haxe_ver < "4.0.0") implements Dynamic #end
+class Error #if (openfl_dynamic && haxe_ver < "4.0.0") implements Dynamic #end
 {
 	@:noCompletion private static inline var DEFAULT_TO_STRING:String = "Error";
 
@@ -35,9 +35,7 @@ class Error #if (haxe_ver >= "4.1.0") extends haxe.Exception #elseif (openfl_dyn
 		this property is "Error". You can specify a message property when you create an
 		Error object by passing the error string to the Error constructor function.
 	**/
-	#if (haxe_ver < "4.1.0")
 	public var message:String;
-	#end
 
 	/**
 		Contains the name of the Error object. By default, the value of this property is
@@ -54,12 +52,7 @@ class Error #if (haxe_ver >= "4.1.0") extends haxe.Exception #elseif (openfl_dyn
 	**/
 	public function new(message:String = "", id:Int = 0)
 	{
-		#if (haxe_ver >= "4.1.0")
-		super(message);
-		#else
 		this.message = message;
-		#end
-
 		this.errorID = id;
 		name = "Error";
 	}
@@ -104,13 +97,14 @@ class Error #if (haxe_ver >= "4.1.0") extends haxe.Exception #elseif (openfl_dyn
 	}
 
 	// @:noCompletion @:dox(hide) public static function throwError (type:Class<Dynamic>, index:UInt, ?p1:Dynamic, ?p2:Dynamic, ?p3:Dynamic, ?p4:Dynamic, ?p5:Dynamic):Dynamic;
+
 	/**
 		Returns the string "Error" by default or the value contained in the `Error.message`
 		property, if defined.
 
 		@returns	The error message.
 	**/
-	public #if (haxe_ver >= "4.1.0") override #end function toString():String
+	public function toString():String
 	{
 		if (message != null)
 		{

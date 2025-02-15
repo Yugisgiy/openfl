@@ -1,13 +1,11 @@
 package openfl.display._internal;
 
-#if !flash
 import openfl.display.DisplayObject;
 import openfl.display.OpenGLRenderer;
 #if gl_stats
 import openfl.display._internal.stats.Context3DStats;
 import openfl.display._internal.stats.DrawCallContext;
 #end
-import openfl.geom.Matrix;
 
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
@@ -46,15 +44,7 @@ class Context3DShape
 				var shader = renderer.__initDisplayShader(cast shape.__worldShader);
 				renderer.setShader(shader);
 				renderer.applyBitmapData(graphics.__bitmap, true);
-
-				var matrix = Matrix.__pool.get();
-				matrix.scale(1 / graphics.__bitmapScale, 1 / graphics.__bitmapScale);
-				matrix.concat(graphics.__worldTransform);
-
-				renderer.applyMatrix(renderer.__getMatrix(matrix, AUTO));
-
-				Matrix.__pool.release(matrix);
-
+				renderer.applyMatrix(renderer.__getMatrix(graphics.__worldTransform, AUTO));
 				renderer.applyAlpha(shape.__worldAlpha);
 				renderer.applyColorTransform(shape.__worldColorTransform);
 				renderer.updateShader();
@@ -114,4 +104,3 @@ class Context3DShape
 		}
 	}
 }
-#end

@@ -1,6 +1,5 @@
 package openfl.display._internal;
 
-#if !flash
 @:access(openfl.display.SimpleButton)
 class CanvasSimpleButton
 {
@@ -28,4 +27,3 @@ class CanvasSimpleButton
 		renderer.__renderDrawableMask(simpleButton.__currentState);
 	}
 }
-#end

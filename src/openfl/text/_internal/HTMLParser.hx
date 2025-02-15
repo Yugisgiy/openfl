@@ -1,8 +1,6 @@
 package openfl.text._internal;
 
-#if !flash
 import openfl.utils._internal.Log;
-import openfl.text.StyleSheet;
 import openfl.text.TextFormat;
 import openfl.Vector;
 
@@ -10,18 +8,14 @@ import openfl.Vector;
 @:fileXml('tags="haxe,release"')
 @:noDebug
 #end
-@:access(openfl.text.StyleSheet)
 @SuppressWarnings("checkstyle:FieldDocComment")
 class HTMLParser
 {
 	private static var __regexAlign:EReg = ~/align\s?=\s?("([^"]+)"|'([^']+)')/i;
 	private static var __regexBreakTag:EReg = ~/<br\s*\/?>/gi;
 	private static var __regexBlockIndent:EReg = ~/blockindent\s?=\s?("([^"]+)"|'([^']+)')/i;
-	private static var __regexClass:EReg = ~/class\s?=\s?("([^"]+)"|'([^']+)')/i;
 	private static var __regexColor:EReg = ~/color\s?=\s?("#([^"]+)"|'#([^']+)')/i;
-	private static var __regexEntityApos:EReg = ~/&apos;/g;
-	private static var __regexEntityNbsp:EReg = ~/&nbsp;/g;
-	private static var __regexCharEntity:EReg = ~/&#(?:([0-9]+)|(x[0-9a-fA-F]+));/g;
+	private static var __regexEntities:Array<EReg> = [~/&quot;/g, ~/&apos;/g, ~/&amp;/g, ~/&lt;/g, ~/&gt;/g, ~/&nbsp;/g];
 	private static var __regexFace:EReg = ~/face\s?=\s?("([^"]+)"|'([^']+)')/i;
 	private static var __regexHTMLTag:EReg = ~/<.*?>/g;
 	private static var __regexHref:EReg = ~/href\s?=\s?("([^"]+)"|'([^']+)')/i;
@@ -32,43 +26,10 @@ class HTMLParser
 	private static var __regexSize:EReg = ~/size\s?=\s?("([^"]+)"|'([^']+)')/i;
 	private static var __regexTabStops:EReg = ~/tabstops\s?=\s?("([^"]+)"|'([^']+)')/i;
 
-	public static function parse(value:String, multiline:Bool, styleSheet:StyleSheet, textFormat:TextFormat, textFormatRanges:Vector<TextFormatRange>):String
+	public static function parse(value:String, textFormat:TextFormat, textFormatRanges:Vector<TextFormatRange>):String
 	{
-		if (multiline)
-		{
-			value = __regexBreakTag.replace(value, "\n");
-		}
-		else
-		{
-			value = __regexBreakTag.replace(value, "");
-		}
-
-		// it's not documented, but &nbsp; is supported by Flash
-		value = __regexEntityNbsp.replace(value, " ");
-
-		value = __regexCharEntity.map(value, function(ereg)
-		{
-			var decimalStr = ereg.matched(1);
-			var hexStr = ereg.matched(2);
-			if (decimalStr != null)
-			{
-				var decimal = Std.parseInt(decimalStr);
-				if (decimal != null)
-				{
-					return String.fromCharCode(decimal);
-				}
-			}
-			if (hexStr != null)
-			{
-				var hex = Std.parseInt("0" + hexStr);
-				if (hex != null)
-				{
-					return String.fromCharCode(hex);
-				}
-			}
-			// if parsing fails, return the original string
-			return ereg.matched(0);
-		});
+		value = __regexBreakTag.replace(value, "\n");
+		value = __regexEntities[5].replace(value, " ");
 
 		// crude solution
 
@@ -76,7 +37,7 @@ class HTMLParser
 
 		if (segments.length == 1)
 		{
-			value = __htmlUnescape(__regexHTMLTag.replace(value, ""));
+			value = StringTools.htmlUnescape(__regexHTMLTag.replace(value, ""));
 
 			if (textFormatRanges.length > 1)
 			{
@@ -95,9 +56,10 @@ class HTMLParser
 			textFormatRanges.splice(0, textFormatRanges.length);
 
 			value = "";
+			var segment;
 
 			var formatStack = [textFormat.clone()];
-			var tagStack:Array<String> = [];
+			var tagStack = [];
 			var sub:String;
 			var noLineBreak = false;
 
@@ -110,17 +72,14 @@ class HTMLParser
 				var start = tagEndIndex + 1;
 				var spaceIndex = segment.indexOf(" ");
 				var tagName = segment.substring(isClosingTag ? 1 : 0, spaceIndex > -1
-					&& spaceIndex < tagEndIndex ? spaceIndex : tagEndIndex).toLowerCase();
+					&& spaceIndex < tagEndIndex ? spaceIndex : tagEndIndex);
 				var format:TextFormat;
 
 				if (isClosingTag)
 				{
-					if (tagStack.length == 0 || tagName != tagStack[tagStack.length - 1])
+					if (tagStack.length == 0 || tagName.toLowerCase() != tagStack[tagStack.length - 1].toLowerCase())
 					{
-						// TODO: Flash just stops parsing, and seems to omit any further text
-						// break;
-
-						// Log.info("Invalid HTML, unexpected closing tag ignored: " + tagName);
+						Log.info("Invalid HTML, unexpected closing tag ignored: " + tagName);
 						continue;
 					}
 
@@ -128,18 +87,15 @@ class HTMLParser
 					formatStack.pop();
 					format = formatStack[formatStack.length - 1].clone();
 
-					if ((tagName == "p" || tagName == "li") && textFormatRanges.length > 0)
+					if (tagName.toLowerCase() == "p" && textFormatRanges.length > 0)
 					{
-						if (multiline)
-						{
-							value += "\n";
-						}
+						value += "\n";
 						noLineBreak = true;
 					}
 
 					if (start < segment.length)
 					{
-						sub = __htmlUnescape(segment.substr(start));
+						sub = StringTools.htmlUnescape(segment.substr(start));
 						textFormatRanges.push(new TextFormatRange(format, value.length, value.length + sub.length));
 						value += sub;
 						noLineBreak = false;
@@ -151,26 +107,9 @@ class HTMLParser
 
 					if (tagEndIndex > -1)
 					{
-						if (styleSheet != null)
-						{
-							styleSheet.__applyStyle(tagName, format);
-
-							if (__regexClass.match(segment))
-							{
-								styleSheet.__applyStyle("." + __getAttributeMatch(__regexClass), format);
-								styleSheet.__applyStyle(tagName + "." + __getAttributeMatch(__regexClass), format);
-							}
-						}
-
-						switch (tagName)
+						switch (tagName.toLowerCase())
 						{
 							case "a":
-								// TODO: support hover, visited, active (requires partnership with renderer)
-								if (styleSheet != null)
-								{
-									styleSheet.__applyStyle("a:link", format);
-								}
-
 								if (__regexHref.match(segment))
 								{
 									format.url = __getAttributeMatch(__regexHref);
@@ -187,18 +126,6 @@ class HTMLParser
 									var align = __getAttributeMatch(__regexAlign).toLowerCase();
 									format.align = align;
 								}
-
-							case "li":
-								if (textFormatRanges.length > 0 && !noLineBreak)
-								{
-									value += "\n";
-								}
-								var bullet = "• ";
-								// temporarily disable underline for the bullet
-								var bulletFormat = format.clone();
-								bulletFormat.underline = false;
-								textFormatRanges.push(new TextFormatRange(bulletFormat, value.length, value.length + bullet.length));
-								value += bullet;
 
 							case "font":
 								if (__regexFace.match(segment))
@@ -265,7 +192,7 @@ class HTMLParser
 								if (__regexTabStops.match(segment))
 								{
 									var values = __getAttributeMatch(__regexTabStops).split(" ");
-									var tabStops:Array<Int> = [];
+									var tabStops = [];
 
 									for (stop in values)
 									{
@@ -281,7 +208,7 @@ class HTMLParser
 
 						if (start < segment.length)
 						{
-							sub = __htmlUnescape(segment.substring(start));
+							sub = StringTools.htmlUnescape(segment.substring(start));
 							textFormatRanges.push(new TextFormatRange(format, value.length, value.length + sub.length));
 							value += sub;
 							noLineBreak = false;
@@ -289,7 +216,7 @@ class HTMLParser
 					}
 					else
 					{
-						sub = __htmlUnescape(segment);
+						sub = StringTools.htmlUnescape(segment);
 						textFormatRanges.push(new TextFormatRange(format, value.length, value.length + sub.length));
 						value += sub;
 						noLineBreak = false;
@@ -310,12 +237,4 @@ class HTMLParser
 	{
 		return regex.matched(2) != null ? regex.matched(2) : regex.matched(3);
 	}
-
-	@:noCompletion private static function __htmlUnescape(s:String):String
-	{
-		// for some reason, StringTools.htmlUnescape uses &#039; instead of &apos;
-		s = __regexEntityApos.replace(s, "'");
-		return StringTools.htmlUnescape(s);
-	}
 }
-#end

@@ -1,6 +1,5 @@
 package openfl.display._internal;
 
-#if !flash
 import openfl.display.Bitmap;
 import openfl.display.DOMRenderer;
 #if lime
@@ -20,7 +19,10 @@ class DOMBitmap
 	public static function clear(bitmap:Bitmap, renderer:DOMRenderer):Void
 	{
 		#if (js && html5)
-		DOMDisplayObject.clear(bitmap, renderer);
+		if (bitmap.__cacheBitmap != null)
+		{
+			DOMBitmap.clear(bitmap.__cacheBitmap, renderer);
+		}
 
 		if (bitmap.__image != null)
 		{
@@ -48,15 +50,7 @@ class DOMBitmap
 
 			if (bitmap.__bitmapData.image.buffer.__srcImage != null)
 			{
-				var src = bitmap.__bitmapData.image.buffer.__srcImage.src;
-				if (StringTools.startsWith(src, "data:") || StringTools.startsWith(src, "blob:"))
-				{
-					renderCanvas(bitmap, renderer);
-				}
-				else
-				{
-					renderImage(bitmap, renderer);
-				}
+				renderImage(bitmap, renderer);
 			}
 			else
 			{
@@ -161,4 +155,3 @@ class DOMBitmap
 		#end
 	}
 }
-#end

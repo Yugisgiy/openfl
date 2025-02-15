@@ -1,6 +1,5 @@
 package openfl.display._internal;
 
-#if !flash
 import openfl.display.DOMRenderer;
 import openfl.media.Video;
 
@@ -12,8 +11,6 @@ class DOMVideo
 	public static function clear(video:Video, renderer:DOMRenderer):Void
 	{
 		#if (js && html5)
-		DOMDisplayObject.clear(video, renderer);
-
 		if (video.__active)
 		{
 			renderer.element.removeChild(video.__stream.__video);
@@ -62,4 +59,3 @@ class DOMVideo
 		DOMDisplayObject.renderDrawableClear(video, renderer);
 	}
 }
-#end

@@ -2,6 +2,7 @@ package openfl.events;
 
 #if !flash
 // import openfl.utils.ObjectPool;
+
 /**
 	An UncaughtErrorEvent object is dispatched by an instance of the
 	UncaughtErrorEvents class when an uncaught error occurs. An uncaught error
@@ -104,7 +105,7 @@ class UncaughtErrorEvent extends ErrorEvent
 		error happens
 
 		However, the `error` property can potentially be an object of any data
-		type. Haxe does not require a `throw` statement to be used
+		type. ActionScript does not require a `throw` statement to be used
 		only with Error objects. For example, the following code is legal both
 		at compile time and run time:
 
@@ -124,9 +125,9 @@ class UncaughtErrorEvent extends ErrorEvent
 		```haxe
 		function uncaughtErrorHandler(event:UncaughtErrorEvent):Void {
 			var message:String;
-			if (Std.isOfType(event.error, Error)) {
+			if (Std.is(event.error, Error)) {
 				message = cast(event.error, Error).message;
-			} else if (Std.isOfType(event.error, ErrorEvent)) {
+			} else if (Std.is(event.error, ErrorEvent)) {
 				message = cast(event.error, ErrorEvent).text;
 			} else {
 				message = Std.string(event.error);

@@ -1,6 +1,5 @@
 package openfl.display._internal;
 
-#if !flash
 import openfl.display._internal.CairoTextField;
 import openfl.display._internal.CanvasTextField;
 import openfl.display.OpenGLRenderer;
@@ -17,8 +16,6 @@ class Context3DTextField
 {
 	public static function render(textField:TextField, renderer:OpenGLRenderer):Void
 	{
-		renderer.__softwareRenderer.__pixelRatio = renderer.__pixelRatio;
-
 		#if (js && html5)
 		CanvasTextField.render(textField, cast renderer.__softwareRenderer, textField.__worldTransform);
 		#elseif lime_cairo
@@ -60,4 +57,3 @@ class Context3DTextField
 		textField.__graphics.__hardwareDirty = false;
 	}
 }
-#end

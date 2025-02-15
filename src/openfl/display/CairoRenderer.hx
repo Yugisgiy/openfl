@@ -193,13 +193,13 @@ class CairoRenderer extends DisplayObjectRenderer
 			case BITMAP:
 				CairoBitmap.renderDrawable(cast object, this);
 			case SHAPE:
-				CairoDisplayObject.renderDrawable(cast object, this);
+				CairoShape.renderDrawable(cast object, this);
 			case SIMPLE_BUTTON:
 				CairoSimpleButton.renderDrawable(cast object, this);
 			case TEXT_FIELD:
 				CairoTextField.renderDrawable(cast object, this);
 			case VIDEO:
-				// TODO
+			// TODO
 			case TILEMAP:
 				CairoTilemap.renderDrawable(cast object, this);
 			default:
@@ -225,7 +225,7 @@ class CairoRenderer extends DisplayObjectRenderer
 			case TEXT_FIELD:
 				CairoTextField.renderDrawableMask(cast object, this);
 			case VIDEO:
-				// TODO
+			// TODO
 			case TILEMAP:
 				CairoTilemap.renderDrawableMask(cast object, this);
 			default:
