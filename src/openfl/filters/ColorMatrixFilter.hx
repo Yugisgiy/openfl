@@ -20,7 +20,6 @@ import lime.math.RGBA;
 	that inherit from the DisplayObject class), such as MovieClip,
 	SimpleButton, TextField, and Video objects, as well as to BitmapData
 	objects.
-
 	**Note:** For RGBA values, the most significant byte represents the red
 	channel value, followed by green, blue, and then alpha.
 
@@ -50,9 +49,6 @@ import lime.math.RGBA;
 	example, if you zoom in on a large movie clip with a filter applied, the
 	filter is turned off if the resulting image reaches the maximum
 	dimensions.
-
-	@see `openfl.display.DisplayObject.filters`
-	@see `openfl.display.BitmapData.applyFilter`
 **/
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')

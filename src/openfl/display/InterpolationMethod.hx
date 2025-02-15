@@ -10,6 +10,7 @@ package openfl.display;
 	determines the RGB space to use when rendering the gradient.
 **/
 #if (haxe_ver >= 4.0) enum #else @:enum #end abstract InterpolationMethod(Null<Int>)
+
 {
 	/**
 		Specifies that the RGB interpolation method should be used. This means
@@ -18,7 +19,7 @@ package openfl.display;
 		conversion between red, green, and blue component values and the actual
 		intensity of the visible component color.
 
-		For example, consider a simple linear gradient between two colors (with
+		For example, consider a simple linear gradient between two colors(with
 		the `spreadMethod` parameter set to
 		`SpreadMethod.REFLECT`). The different interpolation methods
 		affect the appearance as follows:
@@ -32,7 +33,7 @@ package openfl.display;
 		conversion between red, green, and blue component values and the actual
 		intensity of the visible component color.
 
-		For example, consider a simple linear gradient between two colors (with
+		For example, consider a simple linear gradient between two colors(with
 		the `spreadMethod` parameter set to
 		`SpreadMethod.REFLECT`). The different interpolation methods
 		affect the appearance as follows:
@@ -70,7 +71,9 @@ package openfl.display;
 	}
 }
 #else
-@SuppressWarnings("checkstyle:FieldDocComment") #if (haxe_ver >= 4.0) enum #else @:enum #end abstract InterpolationMethod(String) from String to String
+@SuppressWarnings("checkstyle:FieldDocComment")
+#if (haxe_ver >= 4.0) enum #else @:enum #end abstract InterpolationMethod(String) from String to String
+
 {
 	public var LINEAR_RGB = "linearRGB";
 	public var RGB = "rgb";
