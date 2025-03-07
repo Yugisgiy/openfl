@@ -1,6 +1,7 @@
 package openfl.desktop;
 
 #if !flash
+
 #if !openfljs
 /**
 	The ClipboardTransferMode class defines constants for the modes used as

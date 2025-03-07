@@ -216,7 +216,7 @@ abstract Vector<T>(IVector<T>)
 		is invoked with three arguments: the current item from the Vector, the index of
 		the item, and the Vector object:
 
-			 	```haxe
+			 	```hx
 			 	function callback(item:T, index:Int, vector:Vector<T>):Bool {
 			 		// your code here
 		}
@@ -451,7 +451,7 @@ abstract Vector<T>(IVector<T>)
 		invoked with three arguments: the current item from the Vector, the index of the item,
 		and the Vector object:
 
-		```haxe
+		```hx
 		function callback(item:T, index:Int, vector:Vector<T>):Bool
 		```
 
@@ -2549,7 +2549,7 @@ abstract Vector<T>(VectorData<T>)
 	{
 		if (array != null)
 		{
-			this = ofArray(array);
+			this = VectorData.ofArray(array);
 		}
 		else
 		{
@@ -2687,16 +2687,9 @@ abstract Vector<T>(VectorData<T>)
 		this.unshift(x);
 	}
 
-	public inline static function ofArray<T>(a:Array<T>):Vector<T>
+	public inline static function ofArray<T>(a:Array<Dynamic>):Vector<T>
 	{
-		if (a == null) return null;
-
-		var vec = new VectorData<T>();
-		for (i in 0...a.length)
-		{
-			vec[i] = a[i];
-		}
-		return vec;
+		return VectorData.ofArray(a);
 	}
 
 	public inline static function convert<T, U>(v:Vector<T>):Vector<U>

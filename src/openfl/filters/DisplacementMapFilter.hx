@@ -21,7 +21,6 @@ import lime.math.Vector4;
 	mottled effect to any object that inherits from the DisplayObject class,
 	such as MovieClip, SimpleButton, TextField, and Video objects, as well as
 	to BitmapData objects.
-
 	The use of filters depends on the object to which you apply the filter:
 
 	* To apply filters to a display object, use the `filters` property of the
@@ -54,9 +53,6 @@ import lime.math.Vector4;
 	`scaleX` and `scaleY` properties are set to a value other than 1.0), the
 	filter effect is not scaled. It is scaled only when the user zooms in on
 	the Stage.
-
-	@see `openfl.display.DisplayObject.filters`
-	@see `openfl.display.BitmapData.applyFilter`
 **/
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
@@ -125,13 +121,13 @@ import lime.math.Vector4;
 	/**
 		The mode for the filter. Possible values are DisplacementMapFilterMode
 		constants:
-		* `DisplacementMapFilterMode.WRAP` — Wraps the displacement value to
+		* `DisplacementMapFilterMode.WRAP` � Wraps the displacement value to
 		the other side of the source image.
-		* `DisplacementMapFilterMode.CLAMP` — Clamps the displacement value
+		* `DisplacementMapFilterMode.CLAMP` � Clamps the displacement value
 		to the edge of the source image.
-		* `DisplacementMapFilterMode.IGNORE` — If the displacement value is
+		* `DisplacementMapFilterMode.IGNORE` � If the displacement value is
 		out of range, ignores the displacement and uses the source pixel.
-		* `DisplacementMapFilterMode.COLOR` — If the displacement value is
+		* `DisplacementMapFilterMode.COLOR` � If the displacement value is
 		outside the image, substitutes the values in the `color` and `alpha`
 		properties.
 
@@ -220,7 +216,8 @@ import lime.math.Vector4;
 		return new DisplacementMapFilter(__mapBitmap, __mapPoint.clone(), __componentX, __componentY, __scaleX, __scaleY, __mode, __color, __alpha);
 	}
 
-	@:noCompletion private override function __applyFilter(bitmapData:BitmapData, sourceBitmapData:BitmapData, sourceRect:Rectangle, destPoint:Point):BitmapData
+	@:noCompletion private override function __applyFilter(bitmapData:BitmapData, sourceBitmapData:BitmapData, sourceRect:Rectangle,
+			destPoint:Point):BitmapData
 	{
 		#if lime
 		__updateMapMatrix();

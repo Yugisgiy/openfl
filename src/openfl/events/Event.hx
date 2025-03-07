@@ -20,7 +20,7 @@ import openfl.utils.ObjectPool;
 	location of the click event and whether any keys were pressed during the
 	click event. You can pass such additional information to event listeners by
 	extending the Event class, which is what the MouseEvent class does.
-	The OpenFL API defines several Event subclasses for common events
+	ActionScript 3.0 API defines several Event subclasses for common events
 	that require additional information. Events associated with each of the
 	Event subclasses are described in the documentation for each class.
 
@@ -45,12 +45,6 @@ import openfl.utils.ObjectPool;
 	operations: [Order of Operations in ActionScript](http://web.archive.org/web/20171009141202/http://www.senocular.com:80/flash/tutorials/orderofoperations/).
 	* A blog entry by Matt Przybylski on creating custom events:
 	[AS3: Custom Events](http://evolve.reintroducing.com/2007/10/23/as3/as3-custom-events/).
-
-	@see [Basics of handling events](https://books.openfl.org/openfl-developers-guide/handling-events/basics-of-handling-events.html)
-	@see [The event flow](https://books.openfl.org/openfl-developers-guide/handling-events/the-event-flow.html)
-	@see [Event objects](https://books.openfl.org/openfl-developers-guide/handling-events/event-objects.html)
-	@see [Event listeners](https://books.openfl.org/openfl-developers-guide/handling-events/event-listeners.html)
-	@see [Handling events for display objects](https://books.openfl.org/openfl-developers-guide/display-programming/working-with-display-objects/handling-events-for-display-objects.html)
 **/
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
@@ -164,20 +158,6 @@ class Event
 		actions such as keyboard shortcuts and context menus.
 	**/
 	public static inline var CLEAR:EventType<Event> = "clear";
-
-	/**
-		The `Event.CLOSING` constant defines the value of the `type` property of
-		a `closing` event object.
-		This event has the following properties:
-
-		| Property | Value |
-		| --- | --- |
-		| `bubbles` | `false` |
-		| `cancelable` | `true`; canceling this event object stops the close operation. |
-		| `currentTarget` | The object that is actively processing the Event object with an event listener. |
-		| `target` | The object whose connection has been closed. |
-	**/
-	public static inline var CLOSING:EventType<Event> = "closing";
 
 	/**
 		The `Event.CLOSE` constant defines the value of the `type` property of
@@ -334,21 +314,6 @@ class Event
 		| `target` | Any DisplayObject instance with a listener registered for the `enterFrame` event. |
 	**/
 	public static inline var EXIT_FRAME:EventType<Event> = "exitFrame";
-
-	/**
-		The `Event.EXITING` constant defines the value of the `type` property of
-		an `exiting` event object.
-
-		This event has the following properties:
-
-		| Property | Value |
-		| --- | --- |
-		| `bubbles` | `false` |
-		| `cancelable` | `true`; canceling this event object stops the exit operation. |
-		| `currentTarget` | The NativeApplication object. |
-		| `target` | The NativeApplication object. |
-	**/
-	public static inline var EXITING:EventType<Event> = "exiting";
 
 	/**
 		The `Event.FRAME_CONSTRUCTED` constant defines the value of the `type`
@@ -807,7 +772,7 @@ class Event
 
 	/**
 		A utility function for implementing the `toString()` method in custom
-		OpenFL Event classes. Overriding the `toString()` method is
+		ActionScript 3.0 Event classes. Overriding the `toString()` method is
 		recommended, but not required.
 
 		```haxe
@@ -831,7 +796,7 @@ class Event
 	**/
 	public function formatToString(className:String, p1:String = null, p2:String = null, p3:String = null, p4:String = null, p5:String = null):String
 	{
-		var parameters:Array<String> = [];
+		var parameters = [];
 		if (p1 != null) parameters.push(p1);
 		if (p2 != null) parameters.push(p2);
 		if (p3 != null) parameters.push(p3);
@@ -875,7 +840,7 @@ class Event
 		`stopPropagation()` method doesn't take effect until all the
 		event listeners in the current node finish processing.
 
-		**Note:** This method does not cancel the behavior associated with
+		**Note: ** This method does not cancel the behavior associated with
 		this event; see `preventDefault()` for that functionality.
 
 	**/
@@ -888,13 +853,13 @@ class Event
 	/**
 		Prevents processing of any event listeners in nodes subsequent to the
 		current node in the event flow. This method does not affect any event
-		listeners in the current node (`currentTarget`). In contrast,
+		listeners in the current node(`currentTarget`). In contrast,
 		the `stopImmediatePropagation()` method prevents processing of
 		event listeners in both the current node and subsequent nodes. Additional
 		calls to this method have no effect. This method can be called in any
 		phase of the event flow.
 
-		**Note:** This method does not cancel the behavior associated with
+		**Note: ** This method does not cancel the behavior associated with
 		this event; see `preventDefault()` for that functionality.
 
 	**/

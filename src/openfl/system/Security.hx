@@ -92,9 +92,9 @@ class Security
 		later, set `Security.exactSettings` to `false` before calling
 		`SharedObject.getLocal()`.
 
-		@throws SecurityError An OpenFL application already used the value of
-							  `exactSettings` at least once in a decision about
-							  player settings.
+		@throws SecurityError A Flash Player or AIR application already used
+							  the value of `exactSettings` at least once in a
+							  decision about player settings.
 	**/
 	public static var exactSettings:Bool;
 
@@ -135,14 +135,15 @@ class Security
 		content and data from any domain.
 
 		For more information related to security, see the Flash Player
-		Developer Center Topic: [Security](http://www.adobe.com/go/devnet_security_en).
+		Developer Center Topic: <a
+		href="http://www.adobe.com/go/devnet_security_en"
+		scope="external">Security</a>.
 	**/
 	public static var sandboxType(default, null):String;
 
 	/**
 		Lets SWF files in the identified domains access objects and variables
 		in the SWF file that contains the `allowDomain()` call.
-
 		_Note:_ Calling this method from code in the AIR application sandbox
 		throws a SecurityError exception. Content outside of the application
 		security domain cannot directly cross-script content in the
@@ -285,7 +286,7 @@ class Security
 		child SWF file into a parent SWF, you can access the
 		`contentLoaderInfo` property of the Loader object for the parent SWF:
 
-		```haxe
+		```as3
 		Security.allowDomain(loader.contentLoaderInfo.url)
 		```
 
@@ -309,7 +310,9 @@ class Security
 		It is usually safer to use the `_url` property.
 
 		For more information related to security, see the Flash Player
-		Developer Center Topic: [Security](http://www.adobe.com/go/devnet_security_en).
+		Developer Center Topic: <a
+		href="http://www.adobe.com/go/devnet_security_en"
+		scope="external">Security</a>.
 
 		@throws SecurityError Calling this method from code in the AIR
 							  application security sandbox throws a
@@ -358,7 +361,9 @@ class Security
 		with security architecture and should be used for background
 		information only. The Flash Player Developer Center contains extensive
 		information on Flash Player and security. For more information, see
-		the Flash Player Developer Center Topic: [Security](http://www.adobe.com/go/devnet_security_en).
+		the Flash Player Developer Center Topic <a
+		href="http://www.adobe.com/go/devnet_security_en"
+		scope="external">Security</a>.
 
 		Suppose you are building an e-commerce site that consists of two
 		components: a catalog, which does not need to be secure, because it
@@ -458,7 +463,9 @@ class Security
 		sure to consider the consequences carefully before doing so.
 
 		For more information related to security, see the Flash Player
-		Developer Center Topic: [Security](http://www.adobe.com/go/devnet_security_en).
+		Developer Center Topic: <a
+		href="http://www.adobe.com/go/devnet_security_en"
+		scope="external">Security</a>.
 
 		@throws SecurityError Calling this method from code in the AIR
 							  application security sandbox causes a
@@ -482,7 +489,7 @@ class Security
 		With `Security.loadPolicyFile()`, Flash Player or AIR can load policy
 		files from arbitrary locations, as shown in the following example:
 
-		```haxe
+		```as3
 		Security.loadPolicyFile("http://www.example.com/sub/dir/pf.xml");
 		```
 
@@ -533,8 +540,8 @@ class Security
 		explicitly.
 
 		You cannot connect to commonly reserved ports. For a complete list of
-		blocked ports, see "Restricting Networking APIs" in the _OpenFL
-		Developer's Guide_.
+		blocked ports, see "Restricting Networking APIs" in the _ActionScript
+		3.0 Developer's Guide_.
 
 		Using the `xmlsocket` protocol along with a specific port number lets
 		you retrieve policy files directly from an XMLSocket server, as shown
@@ -559,7 +566,9 @@ class Security
 		HTML page that contains the SWF content.
 
 		For more information related to security, see the Flash Player
-		Developer Center Topic: [Security](http://www.adobe.com/go/devnet_security_en).
+		Developer Center Topic: <a
+		href="http://www.adobe.com/go/devnet_security_en"
+		scope="external">Security</a>.
 
 		@param url The URL location of the policy file to be loaded.
 	**/

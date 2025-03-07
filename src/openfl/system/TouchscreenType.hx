@@ -1,6 +1,7 @@
 package openfl.system;
 
 #if !flash
+
 #if !openfljs
 /**
 	The TouchscreenType class is an enumeration class that provides values for

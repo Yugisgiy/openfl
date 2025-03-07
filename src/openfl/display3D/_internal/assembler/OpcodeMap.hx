@@ -1,6 +1,5 @@
 package openfl.display3D._internal.assembler;
 
-#if !flash
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
 @:noDebug
@@ -54,4 +53,3 @@ class OpcodeMap
 		return OpcodeMap._map;
 	}
 }
-#end

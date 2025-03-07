@@ -3,21 +3,20 @@
 # -xml xml/Flash.xml
 # -swf obj/docs
 # -swf-version 17.0
-# -D display=usage
+# -D display
 # -D doc_gen
-# --macro include("openfl")
+# ImportAll
 # -lib lime
 # -lib openfl
 # --no-output
 
 -xml xml/Flash.xml
 -cpp obj/docs
--D display=usage
+-D display
 -D flash_doc_gen
 -D openfl_doc_gen
 -D doc_gen
--D nocffi
---macro include("openfl")
+ImportAll
 -lib lime
 -lib openfl
 --no-output
@@ -26,13 +25,12 @@
 
 -xml xml/AIR.xml
 -cpp obj/docs
--D display=usage
+-D display
 -D air_doc_gen
 -D flash_doc_gen
 -D openfl_doc_gen
 -D doc_gen
--D nocffi
---macro include("openfl")
+ImportAll
 -lib lime
 -lib openfl
 --no-output
@@ -41,13 +39,12 @@
 
 -xml xml/Windows.xml
 -cpp obj/docs
--D display=usage
+-D display
 -D native
 -D windows
 -D openfl_doc_gen
 -D doc_gen
--D nocffi
---macro include("openfl")
+ImportAll
 -lib lime
 -lib openfl
 --no-output
@@ -56,13 +53,12 @@
 
 -xml xml/macOS.xml
 -cpp obj/docs
--D display=usage
+-D display
 -D native
 -D mac
 -D openfl_doc_gen
 -D doc_gen
--D nocffi
---macro include("openfl")
+ImportAll
 -lib lime
 -lib openfl
 --no-output
@@ -71,13 +67,12 @@
 
 -xml xml/Linux.xml
 -cpp obj/docs
--D display=usage
+-D display
 -D native
 -D linux
 -D openfl_doc_gen
 -D doc_gen
--D nocffi
---macro include("openfl")
+ImportAll
 -lib lime
 -lib openfl
 --no-output
@@ -86,12 +81,11 @@
 
 -xml xml/Neko.xml
 -neko obj/docs
--D display=usage
+-D display
 -D native
 -D openfl_doc_gen
 -D doc_gen
--D nocffi
---macro include("openfl")
+ImportAll
 -lib lime
 -lib openfl
 --no-output
@@ -100,27 +94,12 @@
 
 -xml xml/iOS.xml
 -cpp obj/docs
--D display=usage
+-D display
 -D native
 -D ios
 -D openfl_doc_gen
 -D doc_gen
--D nocffi
---macro include("openfl")
--lib lime
--lib openfl
---no-output
-
---next
-
--xml xml/HashLink.xml
--hl obj/docs
--D display=usage
--D native
--D openfl_doc_gen
--D doc_gen
--D nocffi
---macro include("openfl")
+ImportAll
 -lib lime
 -lib openfl
 --no-output
@@ -129,13 +108,12 @@
 
 -xml xml/Android.xml
 -cpp obj/docs
--D display=usage
+-D display
 -D native
 -D android
 -D openfl_doc_gen
 -D doc_gen
--D nocffi
---macro include("openfl")
+ImportAll
 -lib lime
 -lib openfl
 --no-output
@@ -144,15 +122,15 @@
 
 -xml xml/HTML5.xml
 -js obj/docs
--D display=usage
+-D display
 -D html5
 -D openfl_doc_gen
 -D doc_gen
---macro include("openfl")
+ImportAll
 -lib lime
 -lib openfl
 --no-output
 
 --next
 
--cmd haxelib run dox -o ../docs -i xml -in openfl --title "OpenFL API Reference" -D website "https://www.openfl.org" -D source-path "https://github.com/openfl/openfl/tree/develop/src/" -D textColor 0x777777 -theme ../assets/docs-theme --toplevel-package openfl
+-cmd haxelib run dox -o ../docs -i xml -in openfl --title "API Reference" -D website "http://www.openfl.org" -D source-path "https://github.com/openfl/openfl/tree/develop/src/" -D textColor 0x777777 -theme ../assets/docs-theme --toplevel-package openfl

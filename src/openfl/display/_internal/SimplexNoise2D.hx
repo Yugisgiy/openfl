@@ -1,6 +1,5 @@
 package openfl.display._internal;
 
-#if !flash
 /**
 
 	Inspired by Stefan Gustavson, Linköping University, Sweden
@@ -258,4 +257,3 @@ class SimplexNoise2D extends AbstractNoise
 		return 70.0 * (n0 + n1 + n2);
 	}
 }
-#end

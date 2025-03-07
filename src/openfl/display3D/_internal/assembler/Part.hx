@@ -1,6 +1,5 @@
 package openfl.display3D._internal.assembler;
 
-#if !flash
 import openfl.utils.ByteArray;
 import openfl.utils.Endian;
 
@@ -23,4 +22,3 @@ class Part
 		data.endian = Endian.LITTLE_ENDIAN;
 	}
 }
-#end

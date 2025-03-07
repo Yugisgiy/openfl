@@ -1,6 +1,5 @@
 package openfl.display._internal;
 
-#if !flash
 enum DrawCommandType
 {
 	BEGIN_BITMAP_FILL;
@@ -28,4 +27,3 @@ enum DrawCommandType
 	WINDING_NON_ZERO;
 	UNKNOWN;
 }
-#end

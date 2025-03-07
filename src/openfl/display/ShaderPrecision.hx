@@ -1,6 +1,7 @@
 package openfl.display;
 
 #if !flash
+
 #if !openfljs
 /**
 	This class defines the constants that represent the possible values for

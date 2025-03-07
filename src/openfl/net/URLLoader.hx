@@ -60,8 +60,8 @@ import lime.net.HTTPRequestHeader;
 							  detect and return the status code for the
 							  request.(Some browser environments may not be
 							  able to provide this information.) Note that the
-							  `httpStatus` event (if any) is sent
-							  before (and in addition to) any
+							  `httpStatus` event(if any) is sent
+							  before(and in addition to) any
 							  `complete` or `error`
 							  event.
 	@event ioError            Dispatched if a call to URLLoader.load() results
@@ -84,11 +84,6 @@ import lime.net.HTTPRequestHeader;
 							  `URLLoader.load()` attempts to load a
 							  SWZ file and the certificate is invalid or the
 							  digest string does not match the component.
-
-	@see [Loading external data](https://books.openfl.org/openfl-developers-guide/http-communications/loading-external-data.html)
-	@see [Web service requests](https://books.openfl.org/openfl-developers-guide/http-communications/web-service-requests.html)
-	@see `openfl.net.URLRequest`
-	@see `openfl.net.URLStream`
 **/
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
@@ -158,7 +153,7 @@ class URLLoader extends EventDispatcher
 
 		@param request A URLRequest object specifying the URL to download. If this
 					   parameter is omitted, no load operation begins. If
-					   specified, the load operation begins immediately (see the
+					   specified, the load operation begins immediately(see the
 					   `load` entry for more information).
 	**/
 	public function new(request:URLRequest = null)
@@ -197,7 +192,7 @@ class URLLoader extends EventDispatcher
 		data to the specified URL, you can set the `data` property in
 		the URLRequest object.
 
-		**Note:** If a file being loaded contains non-ASCII characters (as
+		**Note:** If a file being loaded contains non-ASCII characters(as
 		found in many non-English languages), it is recommended that you save the
 		file with UTF-8 or UTF-16 encoding as opposed to a non-Unicode format like
 		ASCII.
@@ -212,18 +207,18 @@ class URLLoader extends EventDispatcher
 		data.
 
 		You cannot connect to commonly reserved ports. For a complete list of
-		blocked ports, see "Restricting Networking APIs" in the _OpenFL
-		Developer's Guide_.
+		blocked ports, see "Restricting Networking APIs" in the _ActionScript
+		3.0 Developer's Guide_.
 
-		 In Flash Player 10 and later, if you use a multipart Content-Type (for
-		example "multipart/form-data") that contains an upload (indicated by a
+		 In Flash Player 10 and later, if you use a multipart Content-Type(for
+		example "multipart/form-data") that contains an upload(indicated by a
 		"filename" parameter in a "content-disposition" header within the POST
 		body), the POST operation is subject to the security rules applied to
 		uploads:
 
 		* The POST operation must be performed in response to a user-initiated
 		action, such as a mouse click or key press.
-		* If the POST operation is cross-domain (the POST target is not on the
+		* If the POST operation is cross-domain(the POST target is not on the
 		same server as the SWF file that is sending the POST request), the target
 		server must provide a URL policy file that permits cross-domain
 		access.
@@ -258,8 +253,8 @@ class URLLoader extends EventDispatcher
 							  this file as local-with-networking or trusted.
 		@throws SecurityError You are trying to connect to a commonly reserved
 							  port. For a complete list of blocked ports, see
-							  "Restricting Networking APIs" in the _OpenFL
-							  Developer's Guide_.
+							  "Restricting Networking APIs" in the _ActionScript
+							  3.0 Developer's Guide_.
 		@throws TypeError     The value of the request parameter or the
 							  `URLRequest.url` property of the
 							  URLRequest object passed are `null`.
@@ -281,12 +276,10 @@ class URLLoader extends EventDispatcher
 								  a server outside the caller's security sandbox.
 								  This may be worked around using a policy file on
 								  the server.
-		@event securityError      A load operation attempted to load a SWZ file (a
+		@event securityError      A load operation attempted to load a SWZ file(a
 								  Adobe platform component), but the certificate
 								  is invalid or the digest does not match the
 								  component.
-
-		@see [Loading external data](https://books.openfl.org/openfl-developers-guide/http-communications/loading-external-data.html)
 	**/
 	public function load(request:URLRequest):Void
 	{
@@ -304,7 +297,6 @@ class URLLoader extends EventDispatcher
 				.onError(httpRequest_onError)
 				.onComplete(function(data:ByteArray):Void
 				{
-					__dispatchResponseStatus();
 					__dispatchStatus();
 					this.data = data;
 
@@ -322,17 +314,8 @@ class URLLoader extends EventDispatcher
 				.onError(httpRequest_onError)
 				.onComplete(function(data:String):Void
 				{
-					__dispatchResponseStatus();
 					__dispatchStatus();
-
-					if (dataFormat == VARIABLES)
-					{
-						this.data = new URLVariables(data);
-					}
-					else
-					{
-						this.data = data;
-					}
+					this.data = data;
 
 					var event = new Event(Event.COMPLETE);
 					dispatchEvent(event);
@@ -341,12 +324,13 @@ class URLLoader extends EventDispatcher
 		#end
 	}
 
-	@:noCompletion private function __dispatchResponseStatus():Void
+	@:noCompletion private function __dispatchStatus():Void
 	{
-		var responseStatusEvent = new HTTPStatusEvent(HTTPStatusEvent.HTTP_RESPONSE_STATUS, false, false, __httpRequest.responseStatus);
-		responseStatusEvent.responseURL = __httpRequest.uri;
+		var event = new HTTPStatusEvent(HTTPStatusEvent.HTTP_STATUS, false, false, __httpRequest.responseStatus);
+		event.responseURL = __httpRequest.uri;
 
 		var headers = new Array<URLRequestHeader>();
+
 		#if (lime && !display && !macro && !doc_gen)
 		if (__httpRequest.enableResponseHeaders && __httpRequest.responseHeaders != null)
 		{
@@ -356,14 +340,9 @@ class URLLoader extends EventDispatcher
 			}
 		}
 		#end
-		responseStatusEvent.responseHeaders = headers;
-		dispatchEvent(responseStatusEvent);
-	}
 
-	@:noCompletion private function __dispatchStatus():Void
-	{
-		var statusEvent = new HTTPStatusEvent(HTTPStatusEvent.HTTP_STATUS, false, false, __httpRequest.responseStatus);
-		dispatchEvent(statusEvent);
+		event.responseHeaders = headers;
+		dispatchEvent(event);
 	}
 
 	@:noCompletion private function __prepareRequest(httpRequest:#if (!lime || display || macro || doc_gen) Dynamic #else _IHTTPRequest #end,
@@ -410,7 +389,6 @@ class URLLoader extends EventDispatcher
 		#if (lime >= "8.0.0")
 		__httpRequest.manageCookies = request.manageCookies;
 		#end
-		__httpRequest.withCredentials = request.withCredentials;
 
 		// TODO: Better user agent?
 		var userAgent = request.userAgent;
@@ -424,22 +402,8 @@ class URLLoader extends EventDispatcher
 	// Event Handlers
 	@:noCompletion private function httpRequest_onError(error:Dynamic):Void
 	{
-		__dispatchResponseStatus();
 		__dispatchStatus();
 
-		#if (lime && !doc_gen)
-		// some targets won't allow us to cast to HTTPRequest<Dynamic>
-		if (#if (haxe_ver >= 4.2) Std.isOfType #else Std.is #end (__httpRequest, _HTTPRequest_Bytes))
-		{
-			var bytesRequest:_HTTPRequest_Bytes<Bytes> = cast __httpRequest;
-			data = bytesRequest.responseData;
-		}
-		else if (#if (haxe_ver >= 4.2) Std.isOfType #else Std.is #end (__httpRequest, _HTTPRequest_String))
-		{
-			var stringRequest:_HTTPRequest_String<String> = cast __httpRequest;
-			data = stringRequest.responseData;
-		}
-		#end
 		#if !hl
 		// can't compare a string against an integer in HashLink
 		if (error == 403)

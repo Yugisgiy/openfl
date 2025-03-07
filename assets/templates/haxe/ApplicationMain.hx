@@ -19,7 +19,7 @@ class ApplicationMain
 		lime.system.System.__registerEntryPoint("::APP_FILE::", create);
 
 		#if (js && html5)
-		#if (munit || (utest && openfl_enable_utest_legacy_mode))
+		#if (munit || utest)
 		lime.system.System.embed("::APP_FILE::", null, ::WIN_WIDTH::, ::WIN_HEIGHT::);
 		#end
 		#else
@@ -104,9 +104,7 @@ class ApplicationMain
 
 		app.createWindow(attributes);
 		::end::
-		#elseif air
-		app.window.title = "::meta.title::";
-		#else
+		#elseif !air
 		app.window.context.attributes.background = ::WIN_BACKGROUND::;
 		app.window.frameRate = ::WIN_FPS::;
 		#end
