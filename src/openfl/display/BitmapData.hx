@@ -1520,9 +1520,7 @@ class BitmapData implements IBitmapDrawable
 					__indexBufferData[53] = 10;
 
 					__indexBuffer = context.createIndexBuffer(54);
-				}
-				else if (centerX == 0 && centerY != 0)
-				{
+
 					__indexBufferData = new UInt16Array(18);
 
 					// 3 ——— 2
